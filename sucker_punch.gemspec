@@ -21,5 +21,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "rake"
 
   gem.add_dependency "celluloid", "> 0.11"
-  gem.add_dependency "active_support"
 end

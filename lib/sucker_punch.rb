@@ -1,4 +1,3 @@
-require 'active_support/core_ext/string'
 require 'celluloid'
 require 'sucker_punch/exceptions'
 
