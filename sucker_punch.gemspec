@@ -8,9 +8,9 @@ Gem::Specification.new do |gem|
   gem.version       = SuckerPunch::VERSION
   gem.authors       = ["Brandon Hilkert"]
   gem.email         = ["brandonhilkert@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Asynchronous processing library for Ruby}
+  gem.summary       = %q{Sucker Punch is a Ruby asynchronous processing using Celluloid, heavily influenced by Sidekiq and girl_friday.}
+  gem.homepage      = "https://github.com/brandonhilkert/sucker_punch"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
