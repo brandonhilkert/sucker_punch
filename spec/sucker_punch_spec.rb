@@ -6,7 +6,7 @@ end
 
 describe SuckerPunch do
   context "config" do
-    context "done right" do
+    context "properly configured" do
       before(:all) do
         SuckerPunch.config do
           queue name: :crazy_queue, worker: FakeWorker
@@ -14,6 +14,8 @@ describe SuckerPunch do
       end
 
       it "defines a pool" do
+        binding.pry
+        pending "figure out what parent class is"
         # puts Celluloid::Actor[:fake_worker].class
         # Celluloid::Actor[:fake_worker].should be
       end

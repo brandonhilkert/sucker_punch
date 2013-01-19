@@ -64,6 +64,24 @@ class AwesomeWorker
 end
 ```
 
+Queues:
+
+```Ruby
+SuckerPunch::Queue[:log_queue] # Is just the class LogWorker
+```
+
+Synchronous:
+
+```Ruby
+SuckerPunch::Queue[:log_queue].perform("login")
+```
+
+Asynchronous:
+
+```Ruby
+SuckerPunch::Queue[:log_queue].async.perform("login") # => nil
+```
+
 ## Gem Name
 
 With all due respect, [@jmazzi](https://twitter.com/jmazzi) is completely responsible for the name, which is totally awesome. If you're looking for a name for something, he is the one to go to.
