@@ -13,10 +13,15 @@ module SuckerPunch
     raise SuckerPunch::MissingQueueName unless options[:name]
     raise SuckerPunch::MissingWorkerName unless options[:worker]
 
-    klass = options.fetch(:worker)
+    klass         = options.fetch(:worker)
     registry_name = options.fetch(:name)
+    size          = options.fetch(:size, nil)
 
-    Celluloid::Actor[registry_name] = klass.send(:pool)
+    Celluloid::Actor[registry_name] = if size
+                                        klass.send(:pool, size: size)
+                                      else
+                                        klass.send(:pool)
+                                      end
   end
 end
 

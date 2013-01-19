@@ -6,8 +6,10 @@ end
 
 describe SuckerPunch::Queue do
   describe ".[]" do
-    Celluloid::Actor[:fake] = FakeWorker.pool
-    pending "figure out what the parent class is"
-    # SuckerPunch::Queue[:fake].should be
+    it "delegates to Celluloid" do
+      Celluloid::Actor[:fake] = FakeWorker.pool
+      Celluloid::Actor.should_receive(:[]).with(:fake)
+      SuckerPunch::Queue[:fake]
+    end
   end
 end

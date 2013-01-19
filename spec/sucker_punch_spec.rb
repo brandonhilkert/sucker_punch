@@ -9,21 +9,21 @@ describe SuckerPunch do
     context "properly configured" do
       before(:all) do
         SuckerPunch.config do
-          queue name: :crazy_queue, worker: FakeWorker
+          queue name: :crazy_queue, worker: FakeWorker, size: 7
         end
       end
 
-      it "defines a pool" do
-        binding.pry
-        pending "figure out what parent class is"
-        # puts Celluloid::Actor[:fake_worker].class
-        # Celluloid::Actor[:fake_worker].should be
+      it "turns the class into an actor" do
+        Celluloid::Actor[:crazy_queue].should be_a(FakeWorker)
+        Celluloid::Actor[:crazy_queue].methods.should include(:async)
       end
 
-      it "registers the actor" do
-        Celluloid::Actor[:crazy_queue].should be
+      it "allow asynchrounous processing" do
       end
 
+      it "sets worker size" do
+        Celluloid::Actor[:crazy_queue].size.should == 7
+      end
     end
 
     context "with no queue name" do
