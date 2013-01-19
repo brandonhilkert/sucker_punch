@@ -26,8 +26,8 @@ Configuration:
 
 ```Ruby
   SuckerPunch.config do
-    queue worker: LogWorker, size: 10
-    queue worker: AwesomeWorker, size: 2
+    queue name: :log_queue, worker: LogWorker, size: 10
+    queue name: :awesome_queue, worker: AwesomeWorker, size: 2
   end
 ```
 
