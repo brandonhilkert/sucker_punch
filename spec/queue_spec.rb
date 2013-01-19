@@ -31,4 +31,18 @@ describe SuckerPunch::Queue do
       Celluloid::Actor[:crazy_queue].size.should == 7
     end
   end
+
+  describe "delegation" do
+    let(:queue) { SuckerPunch::Queue.new(:crazy_queue) }
+
+    before(:each) do
+      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 7)
+    end
+
+    it "sends messages to Actor" do
+      queue.size.should == 7
+      queue.idle_size.should == 7
+      queue.busy_size.should == 0
+    end
+  end
 end

@@ -17,5 +17,9 @@ module SuckerPunch
                                   klass.send(:pool)
                                 end
     end
+
+    def method_missing(method_name, *args, &block)
+      Celluloid::Actor[name].send(method_name, *args, &block)
+    end
   end
 end
