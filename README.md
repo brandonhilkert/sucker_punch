@@ -1,7 +1,5 @@
 # Sucker Punch
 
-[THIS IS A WORK IN PROGRESS AND SHOULD NOT BE USED IN PRODUCTION]
-
 Sucker Punch is a Ruby asynchronous processing using Celluloid, heavily influenced by Sidekiq and girl_friday. With Celluloid's actor pattern, we use do asynchronous processing within a single process. This reduces costs of hosting on a service like Heroku along with the memory footprint of having to maintain additional workers if hosting on a dedicated server.
 
 ## Installation
