@@ -6,23 +6,14 @@ end
 
 describe SuckerPunch do
   context "config" do
+
     context "properly configured" do
-      before(:all) do
+      it "registers the queue" do
+        SuckerPunch::Queue.any_instance.should_receive(:register).with(FakeWorker, 7)
+
         SuckerPunch.config do
           queue name: :crazy_queue, worker: FakeWorker, size: 7
         end
-      end
-
-      it "turns the class into an actor" do
-        Celluloid::Actor[:crazy_queue].should be_a(FakeWorker)
-        Celluloid::Actor[:crazy_queue].methods.should include(:async)
-      end
-
-      it "allow asynchrounous processing" do
-      end
-
-      it "sets worker size" do
-        Celluloid::Actor[:crazy_queue].size.should == 7
       end
     end
 

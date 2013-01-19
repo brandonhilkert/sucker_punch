@@ -1,5 +1,8 @@
 require 'celluloid'
 require 'sucker_punch/exceptions'
+require 'sucker_punch/queue'
+require 'sucker_punch/worker'
+require 'sucker_punch/version'
 
 module SuckerPunch
   extend self
@@ -9,21 +12,14 @@ module SuckerPunch
   end
 
   def queue(options = {})
-    raise SuckerPunch::MissingQueueName unless options[:name]
-    raise SuckerPunch::MissingWorkerName unless options[:worker]
+    raise MissingQueueName unless options[:name]
+    raise MissingWorkerName unless options[:worker]
 
     klass         = options.fetch(:worker)
     registry_name = options.fetch(:name)
     size          = options.fetch(:size, nil)
 
-    Celluloid::Actor[registry_name] = if size
-                                        klass.send(:pool, size: size)
-                                      else
-                                        klass.send(:pool)
-                                      end
+    q = Queue.new(registry_name)
+    q.register(klass, size)
   end
 end
-
-require 'sucker_punch/queue'
-require 'sucker_punch/worker'
-require 'sucker_punch/version'
