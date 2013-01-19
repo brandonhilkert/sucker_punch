@@ -66,6 +66,7 @@ Queues:
 
 ```Ruby
 SuckerPunch::Queue[:log_queue] # Is just the class LogWorker
+SuckerPunch::Queue.new(:log_queue)
 ```
 
 Synchronous:
@@ -78,6 +79,14 @@ Asynchronous:
 
 ```Ruby
 SuckerPunch::Queue[:log_queue].async.perform("login") # => nil
+```
+
+Stats:
+
+```Ruby
+SuckerPunch::Queue[:log_queue].size # => 7
+SuckerPunch::Queue[:log_queue].busy_size # => 4
+SuckerPunch::Queue[:log_queue].idle_size # => 3
 ```
 
 ## Gem Name
