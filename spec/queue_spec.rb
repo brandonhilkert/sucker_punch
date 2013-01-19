@@ -22,6 +22,7 @@ describe SuckerPunch::Queue do
     end
 
     it "turns the class into an actor" do
+      Celluloid::Actor[:crazy_queue].should be_a(Celluloid)
       Celluloid::Actor[:crazy_queue].should be_a(FakeWorker)
       Celluloid::Actor[:crazy_queue].methods.should include(:async)
     end
