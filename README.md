@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Configuration:
 
-`app/config/sucker_punch.rb`
+`config/initializers/sucker_punch.rb`
 
 ```Ruby
   SuckerPunch.config do
