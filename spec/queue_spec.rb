@@ -3,9 +3,6 @@ require 'spec_helper'
 class FakeWorker
   include Celluloid
 end
-class FakeOtherWorker
-  include Celluloid
-end
 
 describe SuckerPunch::Queue do
   describe ".[]" do
