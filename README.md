@@ -1,6 +1,8 @@
 # Sucker Punch
 
-Sucker Punch is a Ruby asynchronous processing using Celluloid, heavily influenced by Sidekiq and girl_friday. With Celluloid's actor pattern, we use do asynchronous processing within a single process. This reduces costs of hosting on a service like Heroku along with the memory footprint of having to maintain additional workers if hosting on a dedicated server.
+Sucker Punch is a single-process Ruby asynchronous processing library. It's [girl_friday](https://github.com/mperham/girl_friday) with syntax from [Sidekiq](https://github.com/mperham/sidekiq) and DSL sugar on top of [Celluloid](https://github.com/celluloid/celluloid/). With Celluloid's actor pattern, we can do asynchronous processing within a single process. This reduces costs of hosting on a service like Heroku along with the memory footprint of having to maintain additional workers if hosting on a dedicated server. All queues can run within a single Rails/Sinatra process.
+
+Sucker Punch is perfect for asynchronous processes like emailing, data crunching, or social platform manipulation. No reason to hold up a user when you an do these things in the background within the same process as your web application...
 
 ## Installation
 
@@ -65,7 +67,7 @@ end
 Queues:
 
 ```Ruby
-SuckerPunch::Queue[:log_queue] # Is just the class LogWorker
+SuckerPunch::Queue[:log_queue] # Just a wrapper for the LogWorker class
 SuckerPunch::Queue.new(:log_queue)
 ```
 
@@ -91,7 +93,7 @@ SuckerPunch::Queue[:log_queue].idle_size # => 3
 
 ## Gem Name
 
-With all due respect, [@jmazzi](https://twitter.com/jmazzi) is completely responsible for the name, which is totally awesome. If you're looking for a name for something, he is the one to go to.
+...is awesome. But I can't take credit for it. Thanks to [@jmazzi](https://twitter.com/jmazzi) for his superior naming skills. If you're looking for a name for something, he is the one to go to.
 
 ## Contributing
 
@@ -100,5 +102,3 @@ With all due respect, [@jmazzi](https://twitter.com/jmazzi) is completely respon
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
-
