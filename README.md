@@ -1,5 +1,7 @@
 # Sucker Punch
 
+[![Build Status](https://travis-ci.org/brandonhilkert/sucker_punch.png?branch=master)](https://travis-ci.org/brandonhilkert/sucker_punch)
+
 Sucker Punch is a single-process Ruby asynchronous processing library. It's [girl_friday](https://github.com/mperham/girl_friday) with syntax from [Sidekiq](https://github.com/mperham/sidekiq) and DSL sugar on top of [Celluloid](https://github.com/celluloid/celluloid/). With Celluloid's actor pattern, we can do asynchronous processing within a single process. This reduces costs of hosting on a service like Heroku along with the memory footprint of having to maintain additional workers if hosting on a dedicated server. All queues can run within a single Rails/Sinatra process.
 
 Sucker Punch is perfect for asynchronous processes like emailing, data crunching, or social platform manipulation. No reason to hold up a user when you an do these things in the background within the same process as your web application...
