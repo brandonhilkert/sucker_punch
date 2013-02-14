@@ -50,7 +50,7 @@ end
 
 All workers should define an instance method `perform`, of which the job being queued will adhere to.
 
-Workers interacting with `ActiveRecord` should take special precaution not to exhause connections in the pool. This can be done with `ActiveRecord::Base.connection_pool.with_connection`, which ensures the connection is returned back to the pool when completed.
+Workers interacting with `ActiveRecord` should take special precaution not to exhaust connections in the pool. This can be done with `ActiveRecord::Base.connection_pool.with_connection`, which ensures the connection is returned back to the pool when completed.
 
 `app/workers/awesome_worker.rb`
 
