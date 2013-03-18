@@ -21,9 +21,7 @@ Or install it yourself as:
 
     $ gem install sucker_punch
 
-## Usage
-
-Configuration:
+## Configuration
 
 `config/initializers/sucker_punch.rb`
 
@@ -34,7 +32,7 @@ Configuration:
   end
 ```
 
-Workers:
+## Usage
 
 `app/workers/log_worker.rb`
 
@@ -67,6 +65,22 @@ class AwesomeWorker
 end
 ```
 
+We can create a job from within another job:
+
+```Ruby
+class AwesomeWorker
+  include SuckerPunch::Worker
+
+  def perform(user_id)
+    ActiveRecord::Base.connection_pool.with_connection do
+      user = User.find(user_id)
+      user.update_attributes(is_awesome: true)
+      SuckerPunch::Queue[:log_queue].async.perform("User #{user.id} became awesome!")
+    end
+  end
+end
+```
+
 Queues:
 
 ```Ruby
@@ -86,7 +100,7 @@ Asynchronous:
 SuckerPunch::Queue[:log_queue].async.perform("login") # => nil
 ```
 
-Stats:
+## Stats
 
 ```Ruby
 SuckerPunch::Queue[:log_queue].size # => 7
