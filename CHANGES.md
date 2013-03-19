@@ -6,5 +6,5 @@
 `spec/spec_helper.rb`
 ```ruby
 require 'sucker_punch/testing'
-SuckerPunch::Queue[:log_queue].async.perform("login") # => SYNCHRNOUS
+SuckerPunch::Queue[:log_queue].async.perform("login") # => SYNCHRONOUS
 ```
