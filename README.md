@@ -108,6 +108,19 @@ SuckerPunch::Queue[:log_queue].busy_size # => 4
 SuckerPunch::Queue[:log_queue].idle_size # => 3
 ```
 
+## Testing
+
+`spec/spec_helper.rb`
+```Ruby
+require 'sucker_punch/inline'
+```
+
+Requiring this library causes your workers to run everything inline. So a call to the following will actually be SYNCHRONOUS.
+
+```Ruby
+SuckerPunch::Queue[:log_queue].async.perform("login")
+```
+
 ## Gem Name
 
 ...is awesome. But I can't take credit for it. Thanks to [@jmazzi](https://twitter.com/jmazzi) for his superior naming skills. If you're looking for a name for something, he is the one to go to.
