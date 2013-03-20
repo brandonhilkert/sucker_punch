@@ -121,6 +121,32 @@ Requiring this library causes your workers to run everything inline. So a call t
 SuckerPunch::Queue[:log_queue].async.perform("login")
 ```
 
+## Troubleshooting
+
+When using Passenger or Unicorn, you should configure the queues within a block that runs after the child process is forked.
+
+``Ruby
+# config/unicorn.rb
+# The following is only need if in your unicorn config
+# you set:
+# preload_app true
+after_fork do |server, worker|
+  SuckerPunch.config do
+    queue name: :log_queue, worker: LogWorker, size: 10
+  end
+end
+```
+```Ruby
+# config/initializers/sidekiq.rb
+if defined?(PhusionPassenger)
+  PhusionPassenger.on_event(:starting_worker_process) do |forked|
+    SuckerPunch.config do
+      queue name: :log_queue, worker: LogWorker, size: 10
+    end
+  end
+end
+```
+
 ## Gem Name
 
 ...is awesome. But I can't take credit for it. Thanks to [@jmazzi](https://twitter.com/jmazzi) for his superior naming skills. If you're looking for a name for something, he is the one to go to.
