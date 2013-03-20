@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../lib/sucker_punch/testing'
+require_relative '../../lib/sucker_punch/testing/inline'
 
 class PatchedWorker
   include SuckerPunch::Worker

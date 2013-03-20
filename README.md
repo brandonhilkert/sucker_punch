@@ -112,7 +112,7 @@ SuckerPunch::Queue[:log_queue].idle_size # => 3
 
 `spec/spec_helper.rb`
 ```Ruby
-require 'sucker_punch/inline'
+require 'sucker_punch/testing/inline'
 ```
 
 Requiring this library causes your workers to run everything inline. So a call to the following will actually be SYNCHRONOUS.
