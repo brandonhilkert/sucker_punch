@@ -125,7 +125,7 @@ SuckerPunch::Queue[:log_queue].async.perform("login")
 
 When using Passenger or Unicorn, you should configure the queues within a block that runs after the child process is forked.
 
-``Ruby
+```Ruby
 # config/unicorn.rb
 # The following is only need if in your unicorn config
 # you set:
