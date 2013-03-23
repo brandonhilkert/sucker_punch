@@ -141,7 +141,7 @@ after_fork do |server, worker|
 end
 ```
 ```Ruby
-# config/initializers/sidekiq.rb
+# config/initializers/sucker_punch.rb
 #
 if defined?(PhusionPassenger)
   PhusionPassenger.on_event(:starting_worker_process) do |forked|
