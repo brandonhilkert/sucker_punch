@@ -23,20 +23,21 @@ Or install it yourself as:
 
 ## Configuration
 
-`config/initializers/sucker_punch.rb`
 
 ```Ruby
-  SuckerPunch.config do
-    queue name: :log_queue, worker: LogWorker, size: 10
-    queue name: :awesome_queue, worker: AwesomeWorker, size: 2
-  end
+# config/initializers/sucker_punch.rb
+
+SuckerPunch.config do
+  queue name: :log_queue, worker: LogWorker, size: 10
+  queue name: :awesome_queue, worker: AwesomeWorker, size: 2
+end
 ```
 
 ## Usage
 
-`app/workers/log_worker.rb`
-
 ```Ruby
+# app/workers/log_worker.rb
+
 class LogWorker
   include SuckerPunch::Worker
 
@@ -50,9 +51,10 @@ All workers should define an instance method `perform`, of which the job being q
 
 Workers interacting with `ActiveRecord` should take special precaution not to exhaust connections in the pool. This can be done with `ActiveRecord::Base.connection_pool.with_connection`, which ensures the connection is returned back to the pool when completed.
 
-`app/workers/awesome_worker.rb`
 
 ```Ruby
+# app/workers/awesome_worker.rb
+
 class AwesomeWorker
   include SuckerPunch::Worker
 
@@ -110,8 +112,9 @@ SuckerPunch::Queue[:log_queue].idle_size # => 3
 
 ## Testing
 
-`spec/spec_helper.rb`
 ```Ruby
+# spec/spec_helper.rb
+
 require 'sucker_punch/testing/inline'
 ```
 
@@ -127,6 +130,7 @@ When using Passenger or Unicorn, you should configure the queues within a block 
 
 ```Ruby
 # config/unicorn.rb
+#
 # The following is only need if in your unicorn config
 # you set:
 # preload_app true
@@ -138,6 +142,7 @@ end
 ```
 ```Ruby
 # config/initializers/sidekiq.rb
+#
 if defined?(PhusionPassenger)
   PhusionPassenger.on_event(:starting_worker_process) do |forked|
     SuckerPunch.config do
