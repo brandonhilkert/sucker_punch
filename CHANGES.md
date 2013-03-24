@@ -22,6 +22,7 @@ SuckerPunch.config do
   queue name: :log_queue, worker: LogWorker, workers: 10
 end
 ```
+- Add testing library to stub out workers
 
 0.3.1
 -----------

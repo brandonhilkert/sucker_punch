@@ -10,7 +10,7 @@ class PatchedWorker
 end
 SuckerPunch::Queue.new(:patched_queue).register(PatchedWorker, 2)
 
-describe "Testing" do
+describe "SuckerPunch Inline Testing" do
   let(:queue) { SuckerPunch::Queue.new(:patched_queue) }
 
   it "processes jobs inline" do

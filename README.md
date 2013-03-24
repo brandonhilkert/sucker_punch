@@ -28,8 +28,8 @@ Or install it yourself as:
 # config/initializers/sucker_punch.rb
 
 SuckerPunch.config do
-  queue name: :log_queue, worker: LogWorker, size: 10
-  queue name: :awesome_queue, worker: AwesomeWorker, size: 2
+  queue name: :log_queue, worker: LogWorker, workers: 10
+  queue name: :awesome_queue, worker: AwesomeWorker, workers: 2
 end
 ```
 
@@ -105,12 +105,62 @@ SuckerPunch::Queue[:log_queue].async.perform("login") # => nil
 ## Stats
 
 ```Ruby
-SuckerPunch::Queue[:log_queue].size # => 7
+SuckerPunch::Queue[:log_queue].workers # => 7
 SuckerPunch::Queue[:log_queue].busy_size # => 4
 SuckerPunch::Queue[:log_queue].idle_size # => 3
 ```
 
 ## Testing
+
+```Ruby
+# spec/spec_helper.rb
+
+require 'sucker_punch/testing'
+```
+
+Requiring this library completely stubs out the internals of Sucker Puncker, but will provide the necessary tools to confirm your jobs are being enqueucompletely stubs out the internals of Sucker Puncker, but will provide the necessary tools to confirm your jobs are being enqueued.
+
+```Ruby
+# spec/spec_helper.rb
+require 'sucker_punch/testing'
+
+# config/initializer/sucker_punch.rb
+SuckerPunch.config do
+  queue name: :email, worker: EmailWorker, workers: 2
+end
+
+# config/workers/email_worker.rb
+class EmailWorker
+  include SuckerPunch::Worker
+
+  def perform(email, user_id)
+    user = User.find(user_id)
+    UserMailer.send(email.to_sym, user)
+  end
+end
+
+# spec/models/user.rb
+class User < ActiveRecord::Base
+  def send_welcome_email
+    SuckerPunch::Queue.new(:email).async.perform(:welcome, self.id)
+  end
+end
+
+# spec/spec_helper.rb
+require 'sucker_punch/testing'
+
+# spec/models/user_spec.rb
+require 'spec_helper'
+
+describe User do
+  describe "#send_welcome_email" do
+    user = FactoryGirl.create(:user)
+    expect{
+      user.send_welcome_email
+     }.to change{ SuckerPunch::Queue.new(:email).jobs.size }.by(1)
+  end
+end
+```
 
 ```Ruby
 # spec/spec_helper.rb
@@ -136,7 +186,7 @@ When using Passenger or Unicorn, you should configure the queues within a block 
 # preload_app true
 after_fork do |server, worker|
   SuckerPunch.config do
-    queue name: :log_queue, worker: LogWorker, size: 10
+    queue name: :log_queue, worker: LogWorker, workers: 10
   end
 end
 ```
@@ -146,7 +196,7 @@ end
 if defined?(PhusionPassenger)
   PhusionPassenger.on_event(:starting_worker_process) do |forked|
     SuckerPunch.config do
-      queue name: :log_queue, worker: LogWorker, size: 10
+      queue name: :log_queue, worker: LogWorker, workers: 10
     end
   end
 end
