@@ -117,14 +117,14 @@ SuckerPunch::Queue[:log_queue].idle_size # => 3
 require 'sucker_punch/testing'
 ```
 
-Requiring this library completely stubs out the internals of Sucker Puncker, but will provide the necessary tools to confirm your jobs are being enqueucompletely stubs out the internals of Sucker Puncker, but will provide the necessary tools to confirm your jobs are being enqueued.
+Requiring this library completely stubs out the internals of Sucker Punch, but will provide the necessary tools to confirm your jobs are being enqueud.
 
 ```Ruby
 # spec/spec_helper.rb
 require 'sucker_punch/testing'
 
 RSpec.configure do |config|
-  config.after(:before) do
+  config.after do
     SuckerPunch.reset! # => Resets the queues and jobs in the queues before each test
   end
 end
