@@ -151,9 +151,6 @@ class User < ActiveRecord::Base
   end
 end
 
-# spec/spec_helper.rb
-require 'sucker_punch/testing'
-
 # spec/models/user_spec.rb
 require 'spec_helper'
 
