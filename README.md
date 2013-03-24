@@ -28,8 +28,8 @@ Or install it yourself as:
 # config/initializers/sucker_punch.rb
 
 SuckerPunch.config do
-  queue name: :log_queue, worker: LogWorker, size: 10
-  queue name: :awesome_queue, worker: AwesomeWorker, size: 2
+  queue name: :log_queue, worker: LogWorker, workers: 10
+  queue name: :awesome_queue, worker: AwesomeWorker, workers: 2
 end
 ```
 

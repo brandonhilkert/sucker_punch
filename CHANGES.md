@@ -1,3 +1,28 @@
+Upcoming
+-----------
+
+- Update config to use `workers` instead of `size`
+
+old config:
+
+```Ruby
+# config/initializers/sucker_punch.rb
+
+SuckerPunch.config do
+  queue name: :log_queue, worker: LogWorker, size: 10
+end
+```
+
+new config:
+
+```Ruby
+# config/initializers/sucker_punch.rb
+
+SuckerPunch.config do
+  queue name: :log_queue, worker: LogWorker, workers: 10
+end
+```
+
 0.3.1
 -----------
 

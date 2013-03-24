@@ -15,11 +15,12 @@ module SuckerPunch
     raise MissingQueueName unless options[:name]
     raise MissingWorkerName unless options[:worker]
 
-    klass         = options.fetch(:worker)
+    klass = options.fetch(:worker)
     registry_name = options.fetch(:name)
-    size          = options.fetch(:size, nil)
+    workers = options.fetch(:workers, nil)
+    workers ||= options.fetch(:size, nil)
 
     q = Queue.new(registry_name)
-    q.register(klass, size)
+    q.register(klass, workers)
   end
 end
