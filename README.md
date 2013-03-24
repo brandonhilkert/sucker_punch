@@ -28,8 +28,8 @@ Or install it yourself as:
 # config/initializers/sucker_punch.rb
 
 SuckerPunch.config do
-  queue name: :log_queue, worker: LogWorker, workers: 10
-  queue name: :awesome_queue, worker: AwesomeWorker, workers: 2
+  queue name: :log_queue, worker: LogWorker, size: 10
+  queue name: :awesome_queue, worker: AwesomeWorker, size: 2
 end
 ```
 
@@ -105,7 +105,7 @@ SuckerPunch::Queue[:log_queue].async.perform("login") # => nil
 ## Stats
 
 ```Ruby
-SuckerPunch::Queue[:log_queue].workers # => 7
+SuckerPunch::Queue[:log_queue].size # => 7
 SuckerPunch::Queue[:log_queue].busy_size # => 4
 SuckerPunch::Queue[:log_queue].idle_size # => 3
 ```
