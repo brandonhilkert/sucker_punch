@@ -1,4 +1,4 @@
-Upcoming
+0.4
 -----------
 - Prefer `workers` stat method over `size`
 - Update config to use `workers` instead of `size`
@@ -22,7 +22,7 @@ SuckerPunch.config do
   queue name: :log_queue, worker: LogWorker, workers: 10
 end
 ```
-- Add testing library to stub out workers
+- Add testing library to stub out workers (see testing section in README)
 
 0.3.1
 -----------
