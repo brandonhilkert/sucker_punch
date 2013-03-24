@@ -114,7 +114,6 @@ SuckerPunch::Queue[:log_queue].idle_size # => 3
 
 ```Ruby
 # spec/spec_helper.rb
-
 require 'sucker_punch/testing'
 ```
 
@@ -123,6 +122,12 @@ Requiring this library completely stubs out the internals of Sucker Puncker, but
 ```Ruby
 # spec/spec_helper.rb
 require 'sucker_punch/testing'
+
+RSpec.configure do |config|
+  config.after(:before) do
+    SuckerPunch.reset! # => Resets the queues and jobs in the queues before each test
+  end
+end
 
 # config/initializer/sucker_punch.rb
 SuckerPunch.config do
@@ -164,7 +169,6 @@ end
 
 ```Ruby
 # spec/spec_helper.rb
-
 require 'sucker_punch/testing/inline'
 ```
 
