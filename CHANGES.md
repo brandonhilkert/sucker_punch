@@ -1,6 +1,6 @@
 Upcoming
 -----------
-
+- Prefer `workers` stat method over `size`
 - Update config to use `workers` instead of `size`
 
 old config:

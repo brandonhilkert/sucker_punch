@@ -18,6 +18,10 @@ module SuckerPunch
                                 end
     end
 
+    def workers
+      size
+    end
+
     def method_missing(method_name, *args, &block)
       Celluloid::Actor[name].send(method_name, *args, &block)
     end

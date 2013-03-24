@@ -15,7 +15,7 @@ describe SuckerPunch::Queue do
 
   describe "#register" do
     before(:each) do
-      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 7)
+      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 2)
     end
 
     it "turns the class into an actor" do
@@ -25,7 +25,14 @@ describe SuckerPunch::Queue do
     end
 
     it "sets worker size" do
-      Celluloid::Actor[:crazy_queue].size.should == 7
+      Celluloid::Actor[:crazy_queue].size.should == 2
+    end
+  end
+
+  describe "#workers" do
+    it "returns number of workers" do
+      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 2)
+      SuckerPunch::Queue.new(:crazy_queue).workers.should == 2
     end
   end
 
@@ -33,12 +40,12 @@ describe SuckerPunch::Queue do
     let(:queue) { SuckerPunch::Queue.new(:crazy_queue) }
 
     before(:each) do
-      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 7)
+      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 2)
     end
 
     it "sends messages to Actor" do
-      queue.size.should == 7
-      queue.idle_size.should == 7
+      queue.size.should == 2
+      queue.idle_size.should == 2
       queue.busy_size.should == 0
     end
   end
