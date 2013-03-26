@@ -177,6 +177,45 @@ SuckerPunch::Queue[:log_queue].async.perform("login")
 
 ## Troubleshooting
 
+If you're running tests in transactions (using DatabaseCleaner or a native solution), Sucker Punch workers may have trouble finding database records that were created during test setup because the worker class is running in a separate thread and the Transaction operates on a different thread so it clears out the data before the worker can do its business. The best thing to do is cleanup data created for tests workers through a truncation strategy by tagging the rspec tests as workers and then specifying the strategy in `spec_helper` like below:
+
+```Ruby
+# spec/spec_helper.rb
+RSpec.configure do |config|
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  # Clean up all worker specs with truncation
+  config.before(:each, :worker => true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
+# spec/workers/email_worker_spec.rb
+require 'spec_helper'
+
+# Tag the spec as a worker spec so data is persisted long enough for the test
+describe EmailWorker, worker: true do
+  describe "#perform" do
+    let(:user) { FactoryGirl.create(:user) }
+
+    it "delivers an email" do
+      expect {
+        EmailWorker.new.perform(user.id)
+      }.to change{ ActionMailer::Base.deliveries.size }.by(1)
+    end
+  end
+end
+```
+
 When using Passenger or Unicorn, you should configure the queues within a block that runs after the child process is forked.
 
 ```Ruby
