@@ -134,7 +134,7 @@ SuckerPunch.config do
   queue name: :email, worker: EmailWorker, workers: 2
 end
 
-# config/workers/email_worker.rb
+# app/workers/email_worker.rb
 class EmailWorker
   include SuckerPunch::Worker
 
