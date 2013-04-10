@@ -114,14 +114,14 @@ SuckerPunch::Queue[:log_queue].idle_size # => 3
 
 ```Ruby
 # spec/spec_helper.rb
-require 'sucker_punch/testing'
+require 'sucker_punch/testing/inline'
 ```
 
 Requiring this library completely stubs out the internals of Sucker Punch, but will provide the necessary tools to confirm your jobs are being enqueud.
 
 ```Ruby
 # spec/spec_helper.rb
-require 'sucker_punch/testing'
+require 'sucker_punch/testing/inline'
 
 RSpec.configure do |config|
   config.after do
