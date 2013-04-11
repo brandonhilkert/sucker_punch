@@ -1,3 +1,8 @@
+Upcoming
+--------
+
+- Remove `size` option when defining a queue, prefer `workers`
+
 0.4
 -----------
 - Prefer `workers` stat method over `size`

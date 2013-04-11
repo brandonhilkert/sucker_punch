@@ -18,7 +18,6 @@ module SuckerPunch
     klass = options.fetch(:worker)
     registry_name = options.fetch(:name)
     workers = options.fetch(:workers, nil)
-    workers ||= options.fetch(:size, nil)
 
     q = Queue.new(registry_name)
     q.register(klass, workers)

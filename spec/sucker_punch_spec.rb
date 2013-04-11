@@ -15,14 +15,6 @@ describe SuckerPunch do
           queue name: :crazy_queue, worker: FakeWorker, workers: 3
         end
       end
-
-      it "supports size for workers count" do
-        SuckerPunch::Queue.any_instance.should_receive(:register).with(FakeWorker, 3)
-
-        SuckerPunch.config do
-          queue name: :crazy_queue, worker: FakeWorker, size: 3
-        end
-      end
     end
 
     context "with no queue name" do
