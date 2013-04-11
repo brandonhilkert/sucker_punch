@@ -110,7 +110,7 @@ SuckerPunch::Queue[:log_queue].busy_size # => 4
 SuckerPunch::Queue[:log_queue].idle_size # => 3
 ```
 
-## Testing
+## Testing (Only 0.3.1+)
 
 ```Ruby
 # spec/spec_helper.rb
