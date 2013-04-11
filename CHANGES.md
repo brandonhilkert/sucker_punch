@@ -1,4 +1,4 @@
-Upcoming
+0.4.1
 --------
 
 - Remove `size` option when defining a queue, prefer `workers`
