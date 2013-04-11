@@ -2,6 +2,7 @@ Upcoming
 --------
 
 - Remove `size` option when defining a queue, prefer `workers`
+- Update Celluloid dependency
 
 0.4
 -----------
