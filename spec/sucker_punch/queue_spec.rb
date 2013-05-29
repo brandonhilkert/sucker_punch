@@ -4,6 +4,16 @@ class FakeWorker
   include Celluloid
 end
 
+class FakeWorkerWithArgs
+  include Celluloid
+
+  attr_reader :passed_arg
+  def initialize(arg)
+    @passed_arg = arg
+    super()
+  end
+end
+
 describe SuckerPunch::Queue do
   describe ".[]" do
     it "delegates to Celluloid" do
@@ -47,6 +57,18 @@ describe SuckerPunch::Queue do
       queue.size.should == 2
       queue.idle_size.should == 2
       queue.busy_size.should == 0
+    end
+  end
+
+  describe "worker arguments" do
+    let(:queue) { SuckerPunch::Queue.new(:crazy_queue) }
+
+    before(:each) do
+      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorkerWithArgs, 2, :arg)
+    end
+
+    it "passes args to worker" do
+      queue.passed_arg.should == :arg
     end
   end
 end

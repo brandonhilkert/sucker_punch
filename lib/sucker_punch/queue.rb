@@ -10,11 +10,11 @@ module SuckerPunch
       Celluloid::Actor[name]
     end
 
-    def register(klass, size)
+    def register(klass, size, args=nil)
       Celluloid::Actor[name] = if size
-                                  klass.send(:pool, size: size)
+                                  klass.send(:pool, size: size, args: args)
                                 else
-                                  klass.send(:pool)
+                                  klass.send(:pool, args: args)
                                 end
     end
 
