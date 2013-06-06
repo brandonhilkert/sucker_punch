@@ -21,7 +21,7 @@ module SuckerPunch
       new(name)
     end
 
-    def register(klass, size)
+    def register(klass, size, args=nil)
       nil
     end
 
