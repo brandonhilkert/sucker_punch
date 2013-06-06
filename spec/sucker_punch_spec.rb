@@ -9,10 +9,18 @@ describe SuckerPunch do
 
     context "properly configured" do
       it "registers the queue" do
-        SuckerPunch::Queue.any_instance.should_receive(:register).with(FakeWorker, 3)
+        SuckerPunch::Queue.any_instance.should_receive(:register).with(FakeWorker, 3, nil)
 
         SuckerPunch.config do
           queue name: :crazy_queue, worker: FakeWorker, workers: 3
+        end
+      end
+
+      it "registers the queue with worker args" do
+        SuckerPunch::Queue.any_instance.should_receive(:register).with(FakeWorker, 3, :arguments)
+
+        SuckerPunch.config do
+          queue name: :crazy_queue, worker: FakeWorker, workers: 3, args: :arguments
         end
       end
     end
