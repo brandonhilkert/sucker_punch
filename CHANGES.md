@@ -1,3 +1,10 @@
+0.5
+--------
+
+- `SuckerPunch::Queue#size` now returns the number of messages enqueued
+- `SuckerPunch::Queue#workers` now returns the number of workers in the queue
+- Update Celluloid dependency
+
 0.4.1
 --------
 

@@ -105,8 +105,9 @@ SuckerPunch::Queue[:log_queue].async.perform("login") # => nil
 ## Stats
 
 ```Ruby
-SuckerPunch::Queue[:log_queue].workers # => 7
-SuckerPunch::Queue[:log_queue].busy_size # => 4
+SuckerPunch::Queue[:log_queue].workers # => 10
+SuckerPunch::Queue[:log_queue].size # => 23 # # of jobs enqueued
+SuckerPunch::Queue[:log_queue].busy_size # => 7
 SuckerPunch::Queue[:log_queue].idle_size # => 3
 ```
 
