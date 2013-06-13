@@ -44,9 +44,10 @@ describe SuckerPunch::Queue do
     end
 
     it "sends messages to Actor" do
-      queue.size.should == 2
+      queue.workers.should == 2
       queue.idle_size.should == 2
       queue.busy_size.should == 0
+      queue.size.should == 0
     end
   end
 end
