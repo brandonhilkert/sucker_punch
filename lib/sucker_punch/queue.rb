@@ -11,11 +11,9 @@ module SuckerPunch
     end
 
     def register(klass, size)
-      Celluloid::Actor[name] = if size
-                                  klass.send(:pool, size: size)
-                                else
-                                  klass.send(:pool)
-                                end
+      opts = {}
+      opts[:size] = size if size
+      Celluloid::Actor[name] = klass.send(:pool, opts)
     end
 
     def workers
