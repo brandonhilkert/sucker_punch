@@ -5,13 +5,11 @@ require 'sucker_punch/worker'
 require 'sucker_punch/version'
 
 module SuckerPunch
-  extend self
-
-  def config(&block)
+  def self.config(&block)
     instance_eval &block
   end
 
-  def queue(options = {})
+  def self.queue(options = {})
     raise MissingQueueName unless options[:name]
     raise MissingWorkerName unless options[:worker]
 
@@ -22,4 +20,14 @@ module SuckerPunch
     q = Queue.new(registry_name)
     q.register(klass, workers)
   end
+
+  def self.logger
+    Celluloid.logger
+  end
+
+  def self.logger=(logger)
+    Celluloid.logger = logger
+  end
 end
+
+require 'sucker_punch/railtie' if defined?(::Rails)

@@ -1,3 +1,10 @@
+0.5.1
+--------
+
+- Add `SuckerPunch.logger`
+- Add `SuckerPunch.logger=`
+- Set SuckerPunch logger to Rails.logger within a Rails application
+
 0.5
 --------
 

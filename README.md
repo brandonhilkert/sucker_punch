@@ -111,6 +111,15 @@ SuckerPunch::Queue[:log_queue].busy_size # => 7
 SuckerPunch::Queue[:log_queue].idle_size # => 3
 ```
 
+## Logger
+
+```Ruby
+SuckerPunch.logger = Logger.new('sucker_punch')
+SuckerPunch.logger # => #<Logger:0x007fa1f28b83f0>
+```
+
+If SuckerPunch is being within a Rails application, SuckerPunch's logger is set to Rails.logger.
+
 ## Testing (Only 0.3.1+)
 
 ```Ruby
