@@ -16,6 +16,10 @@ describe SuckerPunch::Job do
   end
 
   describe "#perform" do
+    after :each do
+      SuckerPunch::Queues.instance_variable_set(:@queues, Set.new)
+    end
+
     context "when pool hasn't been created" do
       it "creates pool and registers queue" do
         expect(Celluloid::Actor[:fake_job]).to eq(nil)
