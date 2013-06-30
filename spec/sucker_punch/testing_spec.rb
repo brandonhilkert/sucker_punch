@@ -8,12 +8,9 @@ class TestingWorker
   end
 end
 
-SuckerPunch.config do
-  queue name: :queue, worker: TestingWorker
-end
-
 describe "SuckerPunch Testing" do
   before :each do
+    SuckerPunch.config { queue name: :queue, worker: TestingWorker }
     require_relative '../../lib/sucker_punch/testing'
     SuckerPunch.reset!
   end
