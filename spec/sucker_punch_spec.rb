@@ -36,7 +36,6 @@ describe SuckerPunch do
         }.to raise_error(SuckerPunch::MissingWorkerName)
       end
     end
-
   end
 
   describe 'logger' do
