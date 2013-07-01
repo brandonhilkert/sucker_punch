@@ -1,7 +1,7 @@
 module SuckerPunch
   module Job
     def self.included(base)
-      base.send :include, ::Celluloid
+      base.send(:include, ::Celluloid)
       base.class_eval do
         alias_method :perform_without_pool_check, :perform
         alias_method :perform, :perform_with_pool_check
