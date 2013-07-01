@@ -3,10 +3,10 @@ require 'spec_helper'
 describe SuckerPunch::Job do
   before :each do
     class ::FakeJob
-
       def perform(name)
         "response #{name}"
       end
+
       include SuckerPunch::Job
     end
   end

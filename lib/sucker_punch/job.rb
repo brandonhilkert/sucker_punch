@@ -16,8 +16,10 @@ module SuckerPunch
     private
 
     def define_celluloid_pool
-      Celluloid::Actor[queue_name] = self.class.send(:pool)
-      SuckerPunch::Queues.register(queue_name)
+      unless SuckerPunch::Queues.registered?(queue_name)
+        Celluloid::Actor[queue_name] = self.class.send(:pool)
+        SuckerPunch::Queues.register(queue_name)
+      end
     end
 
     def queue_name

@@ -9,6 +9,10 @@ module SuckerPunch
     def self.register(name)
       @queues.add(name)
     end
+
+    def self.registered?(name)
+      @queues.include?(name)
+    end
   end
 end
 
