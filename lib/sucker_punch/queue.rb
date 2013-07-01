@@ -5,6 +5,11 @@ module SuckerPunch
     attr_reader :job
     attr_accessor :pool
 
+    def self.find(job)
+      queue = self.new(job)
+      Celluloid::Actor[queue.name]
+    end
+
     def initialize(job)
       @job = job
       @pool = nil
@@ -22,7 +27,11 @@ module SuckerPunch
     end
 
     def registered?
-      SuckerPunch::Queues.all.include?(queue_name)
+      SuckerPunch::Queues.all.include?(name)
+    end
+
+    def name
+      job.class.to_s.underscore.to_sym
     end
 
     private
@@ -32,15 +41,11 @@ module SuckerPunch
     end
 
     def register_celluloid_pool
-      Celluloid::Actor[queue_name] = pool
+      Celluloid::Actor[name] = pool
     end
 
     def register_queue_with_master_list
-      SuckerPunch::Queues.register(queue_name)
-    end
-
-    def queue_name
-      job.class.to_s.underscore.to_sym
+      SuckerPunch::Queues.register(name)
     end
   end
 end
