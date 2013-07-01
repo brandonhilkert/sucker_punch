@@ -1,6 +1,7 @@
 require 'celluloid'
 require 'sucker_punch/core_ext'
 require 'sucker_punch/job'
+require 'sucker_punch/queue'
 require 'sucker_punch/queues'
 require 'sucker_punch/version'
 

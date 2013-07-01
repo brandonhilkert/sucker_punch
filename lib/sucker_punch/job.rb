@@ -33,14 +33,9 @@ module SuckerPunch
     end
 
     def define_celluloid_pool
-      unless SuckerPunch::Queues.registered?(queue_name)
-        Celluloid::Actor[queue_name] = self.class.send(:pool)
-        SuckerPunch::Queues.register(queue_name)
-      end
+      queue = SuckerPunch::Queue.new(self)
+      queue.register
     end
 
-    def queue_name
-      self.class.to_s.underscore.to_sym
-    end
   end
 end
