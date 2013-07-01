@@ -1,3 +1,5 @@
+require 'thread'
+
 module SuckerPunch
   class Queue
     attr_reader :job
@@ -6,14 +8,17 @@ module SuckerPunch
     def initialize(job)
       @job = job
       @pool = nil
+      @mutex = Mutex.new
     end
 
     def register
-      unless registered?
-        initialize_celluloid_pool
-        register_celluloid_pool
-        register_queue_with_master_list
-      end
+      @mutex.synchronize {
+        unless registered?
+          initialize_celluloid_pool
+          register_celluloid_pool
+          register_queue_with_master_list
+        end
+      }
     end
 
     def registered?
