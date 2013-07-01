@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe SuckerPunch::Queues do
-  after :each do
-    SuckerPunch::Queues.instance_variable_set(:@queues, Set.new)
-  end
-
   describe "queue registration and querying" do
     it "adds a queue to the master queue list" do
       SuckerPunch::Queues.register(:fake)

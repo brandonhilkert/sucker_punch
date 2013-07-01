@@ -2,16 +2,16 @@ require 'thread'
 
 module SuckerPunch
   class Queue
-    attr_reader :job
+    attr_reader :klass
     attr_accessor :pool
 
-    def self.find(job)
-      queue = self.new(job)
+    def self.find(klass)
+      queue = self.new(klass)
       Celluloid::Actor[queue.name]
     end
 
-    def initialize(job)
-      @job = job
+    def initialize(klass)
+      @klass = klass
       @pool = nil
       @mutex = Mutex.new
     end
@@ -24,6 +24,7 @@ module SuckerPunch
           register_queue_with_master_list
         end
       }
+      self.class.find(klass)
     end
 
     def registered?
@@ -31,13 +32,13 @@ module SuckerPunch
     end
 
     def name
-      job.class.to_s.underscore.to_sym
+      klass.to_s.underscore.to_sym
     end
 
     private
 
     def initialize_celluloid_pool
-      self.pool = job.class.send(:pool)
+      self.pool = klass.send(:pool)
     end
 
     def register_celluloid_pool

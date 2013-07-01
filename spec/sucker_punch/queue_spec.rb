@@ -11,25 +11,38 @@ describe SuckerPunch::Queue do
     end
   end
 
-  after :each do
-    SuckerPunch::Queues.instance_variable_set(:@queues, Set.new)
-  end
-
   describe "#find" do
     it "returns the Celluloid Actor from the registry" do
-      job = FakeJob.new
-      Celluloid::Actor[:fake_job] = job
-      SuckerPunch::Queue.find(job)
-      queue = SuckerPunch::Queue.find(job)
-      expect(queue).to eq(job)
+      SuckerPunch::Queue.new(FakeJob).register
+      queue = SuckerPunch::Queue.find(FakeJob)
+      queue.class == Celluloid::PoolManager
+    end
+  end
+
+  describe "#register" do
+    let(:job) { FakeJob }
+    let(:queue) { SuckerPunch::Queue.new(job) }
+
+    it "initializes a celluloid pool" do
+      queue.register
+      expect(queue.pool.class).to eq(Celluloid::PoolManager)
+    end
+
+    it "registers the pool with Celluloid" do
+      pool = queue.register
+      expect(Celluloid::Actor[:fake_job]).to eq(pool)
+    end
+
+    it "registers with master list of queues" do
+      queue.register
+      queues = SuckerPunch::Queues.all
+      expect(queues.size).to be(1)
     end
   end
 
   describe "#registered?" do
     it "returns true if queue has already been registered" do
-
-      job = FakeJob.new
-      queue = SuckerPunch::Queue.new(job)
+      queue = SuckerPunch::Queue.new(FakeJob)
 
       expect{
         queue.register
