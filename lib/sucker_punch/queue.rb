@@ -1,36 +1,54 @@
+require 'thread'
+
 module SuckerPunch
   class Queue
-    attr_reader :name
+    attr_reader :klass
+    attr_accessor :pool
 
-    def initialize(name)
-      @name = name
+    def self.find(klass)
+      queue = self.new(klass)
+      Celluloid::Actor[queue.name]
     end
 
-    def self.[](name)
-      Celluloid::Actor[name]
+    def initialize(klass)
+      @klass = klass
+      @pool = nil
+      @mutex = Mutex.new
     end
 
-    def register(klass, size)
-      opts = {}
-      opts[:size] = size if size
-      Celluloid::Actor[name] = klass.send(:pool, opts)
+    def register
+      @mutex.synchronize {
+        unless registered?
+          initialize_celluloid_pool
+          register_celluloid_pool
+          register_queue_with_master_list
+        end
+      }
+      self.class.find(klass)
     end
 
-    # Equivalent to size of the Celluloid Pool
-    # However, in context of a "queue" workers
-    # makes more sense here
-    def workers
-      Celluloid::Actor[name].size
+    def registered?
+      SuckerPunch::Queues.all.include?(name)
     end
 
-    # Equivalent to number of messages queued
-    # in the Celluloid mailbox
-    def size
-      Celluloid::Actor[name].mailbox.size
+    def name
+      klass.to_s.underscore.to_sym
     end
 
-    def method_missing(method_name, *args, &block)
-      Celluloid::Actor[name].send(method_name, *args, &block)
+    private
+
+    def initialize_celluloid_pool
+      self.pool = klass.send(:pool)
+    end
+
+    def register_celluloid_pool
+      Celluloid::Actor[name] = pool
+    end
+
+    def register_queue_with_master_list
+      SuckerPunch::Queues.register(name)
     end
   end
 end
+
+

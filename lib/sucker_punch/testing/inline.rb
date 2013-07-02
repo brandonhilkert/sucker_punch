@@ -5,4 +5,3 @@ module Celluloid
     end
   end
 end
-

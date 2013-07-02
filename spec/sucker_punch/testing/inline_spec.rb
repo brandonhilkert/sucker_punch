@@ -1,20 +1,18 @@
 require 'spec_helper'
 require_relative '../../../lib/sucker_punch/testing/inline'
 
-class PatchedWorker
-  include SuckerPunch::Worker
-
-  def perform
-    "do stuff"
-  end
-end
-SuckerPunch::Queue.new(:patched_queue).register(PatchedWorker, 2)
-
 describe "SuckerPunch Inline Testing" do
-  let(:queue) { SuckerPunch::Queue.new(:patched_queue) }
+  before :each do
+    class PatchedJob
+      def perform
+        "do stuff"
+      end
+      include SuckerPunch::Job
+    end
+  end
 
   it "processes jobs inline" do
-    job = queue.async.perform
+    job = PatchedJob.new.async.perform
     expect(job).to eq "do stuff"
   end
 end

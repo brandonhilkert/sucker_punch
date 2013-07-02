@@ -1,3 +1,10 @@
+1.0.0.pre
+--------
+
+- Removed the need for a configuration initializer
+- include `SuckerPunch::Job` instead of `SuckerPunch::Worker`
+- Use standard Ruby job class instantiation to perform a job (ie. LogJob.new.async.perform)
+
 0.5.1
 --------
 
