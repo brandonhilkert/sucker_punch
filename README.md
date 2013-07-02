@@ -93,7 +93,7 @@ SuckerPunch.logger = Logger.new('sucker_punch')
 SuckerPunch.logger # => #<Logger:0x007fa1f28b83f0>
 ```
 
-If SuckerPunch is being within a Rails application, SuckerPunch's logger is set to Rails.logger by default.
+If Sucker Punch is being used within a Rails application, Sucker Punch's logger is set to Rails.logger by default.
 
 ## Testing
 
@@ -104,9 +104,8 @@ Requiring this library causes your jobs to run everything inline. So a call to t
 require 'sucker_punch/testing/inline'
 ```
 
-
 ```Ruby
-Log.new.async.perform("login")
+Log.new.async.perform("login") # => Will be synchronous and block until job is finished
 ```
 
 ## Troubleshooting
