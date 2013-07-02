@@ -1,53 +1,53 @@
 require 'spec_helper'
 
-class FakeWorker
-  include Celluloid
-end
-
 describe SuckerPunch::Queue do
-  describe ".[]" do
-    it "delegates to Celluloid" do
-      Celluloid::Actor[:fake] = FakeWorker.pool
-      Celluloid::Actor.should_receive(:[]).with(:fake)
-      SuckerPunch::Queue[:fake]
+  before :each do
+    class ::FakeJob
+      include SuckerPunch::Job
+
+      def perform(name)
+        "response #{name}"
+      end
+    end
+  end
+
+  describe "#find" do
+    it "returns the Celluloid Actor from the registry" do
+      SuckerPunch::Queue.new(FakeJob).register
+      queue = SuckerPunch::Queue.find(FakeJob)
+      queue.class == Celluloid::PoolManager
     end
   end
 
   describe "#register" do
-    before(:each) do
-      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 2)
+    let(:job) { FakeJob }
+    let(:queue) { SuckerPunch::Queue.new(job) }
+
+    it "initializes a celluloid pool" do
+      queue.register
+      expect(queue.pool.class).to eq(Celluloid::PoolManager)
     end
 
-    it "turns the class into an actor" do
-      Celluloid::Actor[:crazy_queue].should be_a(Celluloid)
-      Celluloid::Actor[:crazy_queue].should be_a(FakeWorker)
-      Celluloid::Actor[:crazy_queue].methods.should include(:async)
+    it "registers the pool with Celluloid" do
+      pool = queue.register
+      expect(Celluloid::Actor[:fake_job]).to eq(pool)
     end
 
-    it "sets worker size" do
-      Celluloid::Actor[:crazy_queue].size.should == 2
-    end
-  end
-
-  describe "#workers" do
-    it "returns number of workers" do
-      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 2)
-      SuckerPunch::Queue.new(:crazy_queue).workers.should == 2
+    it "registers with master list of queues" do
+      queue.register
+      queues = SuckerPunch::Queues.all
+      expect(queues.size).to be(1)
     end
   end
 
-  describe "delegation" do
-    let(:queue) { SuckerPunch::Queue.new(:crazy_queue) }
+  describe "#registered?" do
+    it "returns true if queue has already been registered" do
+      queue = SuckerPunch::Queue.new(FakeJob)
 
-    before(:each) do
-      SuckerPunch::Queue.new(:crazy_queue).register(FakeWorker, 2)
-    end
-
-    it "sends messages to Actor" do
-      queue.workers.should == 2
-      queue.idle_size.should == 2
-      queue.busy_size.should == 0
-      queue.size.should == 0
+      expect{
+        queue.register
+      }.to change{ queue.registered? }.from(false).to(true)
     end
   end
 end
+
