@@ -1,4 +1,9 @@
-1.0.0.pre
+1.0.0.beta2
+--------
+
+- Add `workers` method to job to specify number of Celluloid pool workers
+
+1.0.0.beta
 --------
 
 - Removed the need for a configuration initializer
