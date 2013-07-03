@@ -4,6 +4,7 @@ describe SuckerPunch::Job do
   before :each do
     class ::FakeJob
       include SuckerPunch::Job
+      workers 4
 
       def perform(name)
         "response #{name}"
@@ -11,24 +12,31 @@ describe SuckerPunch::Job do
     end
   end
 
+  after :each do
+    Celluloid::Actor.clear_registry
+  end
+
   it "includes Celluloid into requesting class when included" do
     FakeJob.should respond_to(:pool)
   end
 
-  describe "#perform" do
-    context "when pool hasn't been created" do
-      it "creates pool and registers queue" do
-        expect(Celluloid::Actor[:fake_job]).to eq(nil)
-        expect(SuckerPunch::Queues.all).to eq([])
+  it "sets the pool size to 4" do
+    pool = FakeJob.new
+    expect(pool.size).to eq(4)
+  end
 
-        # Don't use #async here b/c of a race condition
-        # The expectation will run before the asynchronous
-        # job is executed
-        FakeJob.new.perform("test")
+  it "returns the same pool on each instantiation" do
+    pool = FakeJob.new
+    pool2 = FakeJob.new
+    expect(pool.thread).to eq(pool2.thread)
+  end
 
-        expect(Celluloid::Actor[:fake_job]).to be
-        expect(SuckerPunch::Queues.all).to eq([:fake_job])
-      end
+  describe "when pool hasn't been created" do
+    it "registers queue" do
+      queue = stub("queue")
+      SuckerPunch::Queue.stub(new: queue)
+      queue.should_receive(:register).with(4)
+      pool = FakeJob.new
     end
   end
 end
