@@ -22,14 +22,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "pry"
 
   gem.add_dependency "celluloid", "~> 0.14.1"
-
-  gem.post_install_message = <<-CHANGELOG.gsub(/^  /, '')
-    ================================================================================
-
-      The new Sucker Punch API has gone through significant changes.
-
-      Please check the README at <https://github.com/brandonhilkert/sucker_punch> for usage.
-
-    --------------------------------------------------------------------------------
-    CHANGELOG
 end
