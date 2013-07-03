@@ -33,6 +33,11 @@ describe SuckerPunch::Queue do
       expect(Celluloid::Actor[:fake_job]).to eq(pool)
     end
 
+    it "registers the pool with Celluloid" do
+      pool = queue.register(3)
+      expect(Celluloid::Actor[:fake_job].size).to eq(3)
+    end
+
     it "registers with master list of queues" do
       queue.register
       queues = SuckerPunch::Queues.all

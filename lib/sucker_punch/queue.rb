@@ -5,6 +5,8 @@ module SuckerPunch
     attr_reader :klass
     attr_accessor :pool
 
+    DEFAULT_OPTIONS = { workers: 2 }
+
     def self.find(klass)
       queue = self.new(klass)
       Celluloid::Actor[queue.name]
@@ -16,10 +18,10 @@ module SuckerPunch
       @mutex = Mutex.new
     end
 
-    def register
+    def register(workers = DEFAULT_OPTIONS[:workers] )
       @mutex.synchronize {
         unless registered?
-          initialize_celluloid_pool
+          initialize_celluloid_pool(workers)
           register_celluloid_pool
           register_queue_with_master_list
         end
@@ -37,8 +39,8 @@ module SuckerPunch
 
     private
 
-    def initialize_celluloid_pool
-      self.pool = klass.send(:pool)
+    def initialize_celluloid_pool(workers)
+      self.pool = klass.send(:pool, { size: workers })
     end
 
     def register_celluloid_pool
