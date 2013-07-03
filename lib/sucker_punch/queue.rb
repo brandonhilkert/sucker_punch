@@ -6,6 +6,8 @@ module SuckerPunch
     attr_accessor :pool
 
     DEFAULT_OPTIONS = { workers: 2 }
+    class MaxWorkersExceeded < StandardError; end
+    class NotEnoughWorkers < StandardError; end
 
     def self.find(klass)
       queue = self.new(klass)
@@ -19,6 +21,9 @@ module SuckerPunch
     end
 
     def register(workers = DEFAULT_OPTIONS[:workers] )
+      raise MaxWorkersExceeded if workers > 100
+      raise NotEnoughWorkers if workers < 1
+
       @mutex.synchronize {
         unless registered?
           initialize_celluloid_pool(workers)

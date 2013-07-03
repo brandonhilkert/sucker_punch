@@ -43,6 +43,18 @@ describe SuckerPunch::Queue do
       queues = SuckerPunch::Queues.all
       expect(queues.size).to be(1)
     end
+
+    context "when too many workers are specified" do
+      it "raises a MaxWorkersExceeded exception" do
+        expect{ queue.register(101) }.to raise_error(SuckerPunch::Queue::MaxWorkersExceeded)
+      end
+    end
+
+    context "when too few workers are specified" do
+      it "raises a NotEnoughWorkers exception" do
+        expect{ queue.register(0) }.to raise_error(SuckerPunch::Queue::NotEnoughWorkers)
+      end
+    end
   end
 
   describe "#registered?" do

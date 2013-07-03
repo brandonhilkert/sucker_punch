@@ -1,3 +1,8 @@
+1.0.0.beta3
+--------
+
+- Constrain workers when creating a queue to raise more helpful exceptions
+
 1.0.0.beta2
 --------
 
