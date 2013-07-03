@@ -86,6 +86,22 @@ class AwesomeJob
 end
 ```
 
+The number of workers that get created can be set from the Job using the `workers` method:
+
+
+```Ruby
+class LogJob
+  include SuckerPunch::Job
+  workers 4
+
+  def perform(event)
+    Log.new(event).track
+  end
+end
+```
+
+If the `workers` method is not set, it is by default set to 2.
+
 ## Logger
 
 ```Ruby
