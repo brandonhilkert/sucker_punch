@@ -11,7 +11,7 @@ Sucker Punch is perfect for asynchronous processes like emailing, data crunching
 
 Add this line to your application's Gemfile:
 
-    gem 'sucker_punch'
+    gem 'sucker_punch', '~> 1.0'
 
 And then execute:
 
