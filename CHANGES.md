@@ -1,3 +1,8 @@
+1.0.1
+--------
+
+- Fix how workers are defined on the Job so that jobs can be safely subclassed
+
 1.0.0.beta3
 --------
 
