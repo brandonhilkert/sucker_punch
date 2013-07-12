@@ -126,11 +126,32 @@ Log.new.async.perform("login") # => Will be synchronous and block until job is f
 
 ## Troubleshooting
 
+### Initializers for forking servers (Unicorn, Passenger, etc.)
+
 Previously, Sucker Punch required an initializer and that posed problems for Unicorn and Passenger and other servers that fork.
 Version 1 was rewritten to not require any special code to be executed after forking occurs. Please remove all of that if you're
 using version `>= 1.0.0`
 
-If you're running tests in transactions (using DatabaseCleaner or a native solution), Sucker Punch jobs may have trouble finding database records that were created during test setup because the job class is running in a separate thread and the Transaction operates on a different thread so it clears out the data before the jojob can do its business. The best thing to do is cleanup data created for tests jobs through a truncation strategy by tagging the rspec tests as jobs and then specifying the strategy in `spec_helper` like below:
+### Class naming
+
+Job classes are ultimately Celluloid Actor classes. As a result, class names are susceptible to being clobbered by Celluloid's internal classes.
+To ensure the intended application class is loaded, preface classes with `::`, or use names like `NotificationsMailer` or
+`UserMailer`. Example:
+
+```Ruby
+class EmailJob
+  include SuckerPunch::Job
+
+  def perform(contact)
+    @contact = contact
+    ::Notifications.contact_form(@contact).deliver # => If you don't use :: in this case, the notifications class from Celluloid will be loaded
+  end
+end
+```
+
+### Cleaning test data transactions
+
+If you're running tests in transactions (using Database Cleaner or a native solution), Sucker Punch jobs may have trouble finding database records that were created during test setup because the job class is running in a separate thread and the Transaction operates on a different thread so it clears out the data before the jojob can do its business. The best thing to do is cleanup data created for tests jobs through a truncation strategy by tagging the rspec tests as jobs and then specifying the strategy in `spec_helper` like below:
 
 ```Ruby
 # spec/spec_helper.rb
