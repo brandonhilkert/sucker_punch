@@ -5,8 +5,6 @@ module SuckerPunch
       base.extend(ClassMethods)
 
       base.class_eval do
-        @workers = SuckerPunch::Queue::DEFAULT_OPTIONS[:workers]
-
         def self.new
           define_celluloid_pool(self, @workers)
         end
@@ -18,8 +16,8 @@ module SuckerPunch
         @workers = num
       end
 
-      def define_celluloid_pool(klass, workers)
-        SuckerPunch::Queue.new(klass).register(workers)
+      def define_celluloid_pool(klass, num_workers)
+        SuckerPunch::Queue.new(klass).register(num_workers)
       end
     end
 

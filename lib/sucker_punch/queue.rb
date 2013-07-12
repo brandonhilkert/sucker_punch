@@ -20,13 +20,14 @@ module SuckerPunch
       @mutex = Mutex.new
     end
 
-    def register(workers = DEFAULT_OPTIONS[:workers] )
-      raise MaxWorkersExceeded if workers > 100
-      raise NotEnoughWorkers if workers < 1
+    def register(num_workers = DEFAULT_OPTIONS[:workers])
+      num_workers ||= DEFAULT_OPTIONS[:workers]
+      raise MaxWorkersExceeded if num_workers > 100
+      raise NotEnoughWorkers if num_workers < 1
 
       @mutex.synchronize {
         unless registered?
-          initialize_celluloid_pool(workers)
+          initialize_celluloid_pool(num_workers)
           register_celluloid_pool
           register_queue_with_master_list
         end
@@ -44,8 +45,8 @@ module SuckerPunch
 
     private
 
-    def initialize_celluloid_pool(workers)
-      self.pool = klass.send(:pool, { size: workers })
+    def initialize_celluloid_pool(num_workers)
+      self.pool = klass.send(:pool, { size: num_workers })
     end
 
     def register_celluloid_pool
