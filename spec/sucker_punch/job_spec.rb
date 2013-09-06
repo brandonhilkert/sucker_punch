@@ -33,7 +33,7 @@ describe SuckerPunch::Job do
 
   describe "when pool hasn't been created" do
     it "registers queue" do
-      queue = stub("queue")
+      queue = double("queue")
       SuckerPunch::Queue.stub(new: queue)
       queue.should_receive(:register).with(4)
       pool = FakeJob.new
