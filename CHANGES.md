@@ -1,3 +1,8 @@
+1.0.2
+--------
+
+- Update Celluloid dependency to 0.15.1
+
 1.0.1
 --------
 
