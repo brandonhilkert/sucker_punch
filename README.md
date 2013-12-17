@@ -86,8 +86,7 @@ class AwesomeJob
 end
 ```
 
-The number of workers that get created can be set from the Job using the `workers` method:
-
+The number of workers can be set from the Job using the `workers` method:
 
 ```Ruby
 class LogJob
@@ -100,16 +99,42 @@ class LogJob
 end
 ```
 
-If the `workers` method is not set, it is by default set to 2.
+If the `workers` method is not set, the default is `2`.
+
+## Perform In
+
+Many background processing libraries have methods to perform operations after a
+certain amount of time. Fortunately, timers are built-in to Celluloid, so you
+can take advantage of them with the `after` method:
+
+``` ruby
+class Job
+  include SuckerPunch::Job
+
+  def perform(data)
+    sleep 2
+    puts data
+  end
+
+  def later(sec, data)
+    after(sec) { perform(data) }
+  end
+end
+
+Job.new.async.perform("asdf")
+Job.new.async.later(60, "asdf") # `perform` will be excuted 60 sec. later
+Job.new.async.after(60){ perform("asdf") } # Same as previous, doesn't require extra instance method
+```
 
 ## Logger
 
 ```Ruby
-SuckerPunch.logger = Logger.new('sucker_punch')
+SuckerPunch.logger = Logger.new('sucker_punch.log')
 SuckerPunch.logger # => #<Logger:0x007fa1f28b83f0>
 ```
 
-If Sucker Punch is being used within a Rails application, Sucker Punch's logger is set to Rails.logger by default.
+_Note: If Sucker Punch is being used within a Rails application, Sucker Punch's logger
+is set to Rails.logger by default._
 
 ## Testing
 
@@ -128,15 +153,17 @@ Log.new.async.perform("login") # => Will be synchronous and block until job is f
 
 ### Initializers for forking servers (Unicorn, Passenger, etc.)
 
-Previously, Sucker Punch required an initializer and that posed problems for Unicorn and Passenger and other servers that fork.
-Version 1 was rewritten to not require any special code to be executed after forking occurs. Please remove all of that if you're
-using version `>= 1.0.0`
+Previously, Sucker Punch required an initializer and that posed problems for
+Unicorn and Passenger and other servers that fork.  Version 1 was rewritten to
+not require any special code to be executed after forking occurs. Please remove
+ if you're using version `>= 1.0.0`
 
 ### Class naming
 
-Job classes are ultimately Celluloid Actor classes. As a result, class names are susceptible to being clobbered by Celluloid's internal classes.
-To ensure the intended application class is loaded, preface classes with `::`, or use names like `NotificationsMailer` or
-`UserMailer`. Example:
+Job classes are ultimately Celluloid Actor classes. As a result, class names
+are susceptible to being clobbered by Celluloid's internal classes.  To ensure
+the intended application class is loaded, preface classes with `::`, or use
+names like `NotificationsMailer` or `UserMailer`. Example:
 
 ```Ruby
 class EmailJob
@@ -172,6 +199,7 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+end
 
 # spec/jobs/email_job_spec.rb
 require 'spec_helper'
@@ -192,7 +220,9 @@ end
 
 ## Gem Name
 
-...is awesome. But I can't take credit for it. Thanks to [@jmazzi](https://twitter.com/jmazzi) for his superior naming skills. If you're looking for a name for something, he is the one to go to.
+...is awesome. But I can't take credit for it. Thanks to
+[@jmazzi](https://twitter.com/jmazzi) for his superior naming skills. If you're
+looking for a name for something, he is the one to go to.
 
 ## Contributing
 
