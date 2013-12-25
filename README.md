@@ -123,7 +123,6 @@ end
 
 Job.new.async.perform("asdf")
 Job.new.async.later(60, "asdf") # `perform` will be excuted 60 sec. later
-Job.new.async.after(60){ perform("asdf") } # Same as previous, doesn't require extra instance method
 ```
 
 ## Logger
