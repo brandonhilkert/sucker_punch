@@ -231,4 +231,3 @@ looking for a name for something, he is the one to go to.
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-![Analytics](https://ga-beacon.appspot.com/UA-46785639-1/brandonhilkert/sucker_punch-README?pixel)
