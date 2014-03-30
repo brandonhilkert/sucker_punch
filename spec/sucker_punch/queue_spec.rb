@@ -38,12 +38,6 @@ describe SuckerPunch::Queue do
       expect(Celluloid::Actor[:fake_job].size).to eq(3)
     end
 
-    it "registers with master list of queues" do
-      queue.register
-      queues = SuckerPunch::Queues.all
-      expect(queues.size).to be(1)
-    end
-
     context "when too many workers are specified" do
       it "raises a MaxWorkersExceeded exception" do
         expect{ queue.register(101) }.to raise_error(SuckerPunch::Queue::MaxWorkersExceeded)

@@ -29,14 +29,13 @@ module SuckerPunch
         unless registered?
           initialize_celluloid_pool(num_workers)
           register_celluloid_pool
-          register_queue_with_master_list
         end
       }
       self.class.find(klass)
     end
 
     def registered?
-      SuckerPunch::Queues.all.include?(name)
+      Celluloid::Actor.registered.include?(name.to_sym)
     end
 
     def name
@@ -51,10 +50,6 @@ module SuckerPunch
 
     def register_celluloid_pool
       Celluloid::Actor[name] = pool
-    end
-
-    def register_queue_with_master_list
-      SuckerPunch::Queues.register(name)
     end
   end
 end
