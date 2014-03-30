@@ -33,7 +33,7 @@ describe SuckerPunch::Queue do
       expect(Celluloid::Actor[:fake_job]).to eq(pool)
     end
 
-    it "registers the pool with Celluloid" do
+    it "registers the pool with Celluloid and 3 workers" do
       pool = queue.register(3)
       expect(Celluloid::Actor[:fake_job].size).to eq(3)
     end
