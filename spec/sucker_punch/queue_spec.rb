@@ -11,6 +11,10 @@ describe SuckerPunch::Queue do
     end
   end
 
+  after :each do
+    Celluloid::Actor.clear_registry
+  end
+
   describe "#find" do
     it "returns the Celluloid Actor from the registry" do
       SuckerPunch::Queue.new(FakeJob).register
