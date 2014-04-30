@@ -1,3 +1,14 @@
+1.0.4
+--------
+
+- Fix superclass for `testing/inline` module
+
+1.0.3
+--------
+
+- Track instantiated queues through Celluloid registry
+- Clear Celluloid registry on every Rails request in Development
+
 1.0.2
 --------
 
