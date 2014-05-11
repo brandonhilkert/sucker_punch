@@ -1,3 +1,8 @@
+1.0.5
+--------
+
+- Move `to_prepare` callback in Railtie out of initializer
+
 1.0.4
 --------
 
