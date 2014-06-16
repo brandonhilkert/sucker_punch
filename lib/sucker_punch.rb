@@ -12,6 +12,10 @@ module SuckerPunch
   def self.logger=(logger)
     Celluloid.logger = logger
   end
+
+  def self.exception_handler(&block)
+  	Celluloid.exception_handler(&block)
+  end
 end
 
 require 'sucker_punch/railtie' if defined?(::Rails)

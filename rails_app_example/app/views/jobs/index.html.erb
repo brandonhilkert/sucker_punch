@@ -5,6 +5,11 @@
 <% end %>
 
 <br />
+<%= form_tag crashing_jobs_path do %>
+  <%= submit_tag "Add 1 crashing job to store" %>
+<% end %>
+
+<br />
 <%= form_tag multiple_jobs_path do %>
   <%= submit_tag "Add 1 job to store every 1 second for 5 seconds" %>
 <% end %>
@@ -12,8 +17,24 @@
 
 <h2>Store Content</h2>
 <p>
-<% @store.each do |item| %>
-  <%= item %>
-  <br />
+<% if @store.any? %>
+  <% @store.each do |item| %>
+    <%= item %>
+    <br />
+  <% end %>
+<% else %>
+  (nothing)
+<% end %>
+</p>
+
+<h2>Crashes</h2>
+<p>
+<% if @crashes.any? %>
+  <% @crashes.each do |item| %>
+    <%= item %>
+    <br />
+  <% end %>
+<% else %>
+  (none)
 <% end %>
 </p>
