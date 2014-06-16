@@ -1,3 +1,9 @@
+1.1
+--------
+
+- Delegate to Celluloid's exception handler
+
+
 1.0.5
 --------
 
