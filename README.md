@@ -132,6 +132,14 @@ SuckerPunch.logger = Logger.new('sucker_punch.log')
 SuckerPunch.logger # => #<Logger:0x007fa1f28b83f0>
 ```
 
+You can log messages in your jobs like this:
+
+```Ruby
+SuckerPunch.logger.info 'log some message to sucker_punch.log here'
+```
+
+Since it delegates the logging to Celluloid, it is duck-typed to the Rails logger and can respond to info, debug, warn, and error.
+
 _Note: If Sucker Punch is being used within a Rails application, Sucker Punch's logger
 is set to Rails.logger by default._
 
