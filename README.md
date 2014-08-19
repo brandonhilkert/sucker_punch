@@ -23,10 +23,10 @@ Or install it yourself as:
 
 ## Usage
 
-Each job should be a separate Ruby class and should:
+Each job acts as its own queue and should be a separate Ruby that:
 
-* Add `include SuckerPunch::Job`
-* Define the instance method `perform`, which should be the code the job will run when enqueued
+* includes `SuckerPunch::Job`
+* defines the instance method `perform` that includes the code the job will run when enqueued
 
 
 ```Ruby
