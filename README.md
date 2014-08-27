@@ -23,7 +23,7 @@ Or install it yourself as:
 
 ## Usage
 
-Each job acts as its own queue and should be a separate Ruby that:
+Each job acts as its own queue and should be a separate Ruby class that:
 
 * includes `SuckerPunch::Job`
 * defines the instance method `perform` that includes the code the job will run when enqueued
