@@ -17,7 +17,7 @@ describe SuckerPunch::Job do
   end
 
   it "includes Celluloid into requesting class when included" do
-    FakeJob.should respond_to(:pool)
+    expect(FakeJob).to respond_to(:pool)
   end
 
   it "sets the pool size to 4" do
@@ -34,8 +34,8 @@ describe SuckerPunch::Job do
   describe "when pool hasn't been created" do
     it "registers queue" do
       queue = double("queue")
-      SuckerPunch::Queue.stub(new: queue)
-      queue.should_receive(:register).with(4)
+      allow(SuckerPunch::Queue).to receive(:new).and_return(queue)
+      expect(queue).to receive(:register){ 4 }
       pool = FakeJob.new
     end
   end
