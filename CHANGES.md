@@ -1,8 +1,12 @@
+1.2
+--------
+
+- Update to use Celluloid `0.16`
+
 1.1
 --------
 
 - Delegate to Celluloid's exception handler
-
 
 1.0.5
 --------
