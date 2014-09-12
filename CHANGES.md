@@ -1,3 +1,8 @@
+1.2.1
+--------
+
+- Go back to Celluloid `0.15.2` since it's not production ready
+
 1.2
 --------
 
