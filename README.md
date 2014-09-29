@@ -154,6 +154,18 @@ Sucker Punch has been added as an Active job adapter in the upcoming Rails 4.2 r
 See the [guide](http://edgeguides.rubyonrails.org/active_job_basics.html) for
 configuration and implementation.
 
+Add Sucker Punch to your `Gemfile`:
+
+```Ruby
+gem 'sucker_punch'
+```
+
+And then configure the backend to use Sucker Punch:
+
+```Ruby
+Rails.application.config.active_job.queue_adapter = :sucker_punch
+```
+
 ## Troubleshooting
 
 ### Initializers for forking servers (Unicorn, Passenger, etc.)
