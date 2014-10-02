@@ -105,7 +105,7 @@ If the `workers` method is not set, the default is `2`.
 
 Many background processing libraries have methods to perform operations after a
 certain amount of time. Fortunately, timers are built-in to Celluloid, so you
-can take advantage of them with the `after` method:
+can take advantage of them with the `later` method:
 
 ``` ruby
 class Job
