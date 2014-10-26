@@ -112,7 +112,6 @@ class Job
   include SuckerPunch::Job
 
   def perform(data)
-    sleep 2
     puts data
   end
 
@@ -248,4 +247,3 @@ looking for a name for something, he is the one to go to.
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-
