@@ -194,11 +194,15 @@ end
 
 ### Cleaning test data transactions
 
-If you're running tests in transactions (using Database Cleaner or a native solution), Sucker Punch jobs may have trouble finding database records that were created during test setup because the job class is running in a separate thread and the Transaction operates on a different thread so it clears out the data before the job can do its business. The best thing to do is cleanup data created for tests jobs through a truncation strategy by tagging the rspec tests as jobs and then specifying the strategy in `spec_helper` like below:
+If you're running tests in transactions (using Database Cleaner or a native solution), Sucker Punch jobs may have trouble finding database records that were created during test setup because the job class is running in a separate thread and the Transaction operates on a different thread so it clears out the data before the job can do its business. The best thing to do is cleanup data created for tests jobs through a truncation strategy by tagging the rspec tests as jobs and then specifying the strategy in `spec_helper` like below. And do not forget to turn off transactional fixtures (delete, comment or set it to `false`).
 
 ```Ruby
 # spec/spec_helper.rb
 RSpec.configure do |config|
+
+  # Turn off transactional fixtures (delete, comment or set it to `false`)
+  # config.use_transactional_fixtures = true
+
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
   end
