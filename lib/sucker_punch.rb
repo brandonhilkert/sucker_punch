@@ -14,7 +14,7 @@ module SuckerPunch
   end
 
   def self.exception_handler(&block)
-  	Celluloid.exception_handler(&block)
+    Celluloid.exception_handler(&block)
   end
 end
 
