@@ -3,7 +3,7 @@ require "celluloid/proxies/sync_proxy"
 require "celluloid/proxies/actor_proxy"
 
 module Celluloid
-  class ActorProxy < SyncProxy
+  class CellProxy < SyncProxy
     def async(method_name = nil, *args, &block)
       self
     end

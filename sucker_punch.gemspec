@@ -22,5 +22,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "rake"
   gem.add_development_dependency "pry"
 
-  gem.add_dependency "celluloid", "~> 0.15.2"
+  gem.add_dependency "celluloid", "~> 0.16.0"
 end
