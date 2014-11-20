@@ -2,9 +2,16 @@ language: ruby
 rvm:
   - 1.9.3
   - jruby-19mode
-  - rbx
+  - rbx-2
   - 2.0.0
 matrix:
   allow_failures:
     - rvm: jruby-19mode
-    - rvm: rbx
+    - rvm: rbx-2
+  global:
+    - BUNDLE_JOBS=4
+before_install:
+  # Only use 1 job until Travis fixes the rbx --jobs issue.
+  - if [ "$TRAVIS_RUBY_VERSION" == "rbx-2" ] ; then export BUNDLE_JOBS=1 ; fi
+  - ruby ci/copy_database_config.rb
+install: bundle install --retry=3
