@@ -14,5 +14,4 @@ matrix:
 before_install:
   # Only use 1 job until Travis fixes the rbx --jobs issue.
   - if [ "$TRAVIS_RUBY_VERSION" == "rbx-2" ] ; then export BUNDLE_JOBS=1 ; fi
-  - ruby ci/copy_database_config.rb
 install: bundle install --retry=3
