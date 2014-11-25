@@ -1,3 +1,4 @@
+require 'sucker_punch'
 require "celluloid/proxies/abstract_proxy"
 require "celluloid/proxies/sync_proxy"
 require "celluloid/proxies/actor_proxy"
