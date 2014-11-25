@@ -1,3 +1,8 @@
+1.3.1
+--------
+
+- Require `sucker_punch` before inline testing library to ensure changes stick
+
 1.3
 --------
 
