@@ -5,5 +5,5 @@ class String
     gsub(/([a-z\d])([A-Z])/,'\1_\2').
     tr("-", "_").
     downcase
-  end
-end if !defined?(::ActiveSupport) && !"".respond_to?(:underscore)
+  end if !"".respond_to?(:underscore)
+end
