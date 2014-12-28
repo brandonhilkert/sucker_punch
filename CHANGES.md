@@ -1,3 +1,8 @@
+1.3.2
+--------
+
+- Remove extraneous conditions in core extension `underscore`
+
 1.3.1
 --------
 
