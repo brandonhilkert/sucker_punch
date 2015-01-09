@@ -162,7 +162,11 @@ gem 'sucker_punch'
 And then configure the backend to use Sucker Punch:
 
 ```Ruby
-Rails.application.config.active_job.queue_adapter = :sucker_punch
+# config/initializers/sucker_punch.rb
+Rails.application.configure do
+  config.active_job.queue_adapter = :sucker_punch
+end
+
 ```
 
 ## Troubleshooting
