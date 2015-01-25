@@ -149,7 +149,7 @@ Log.new.async.perform("login") # => Will be synchronous and block until job is f
 
 ## Active Job
 
-Sucker Punch has been added as an Active job adapter in the upcoming Rails 4.2 release.
+Sucker Punch has been added as an Active Job adapter in Rails 4.2.
 See the [guide](http://edgeguides.rubyonrails.org/active_job_basics.html) for
 configuration and implementation.
 
