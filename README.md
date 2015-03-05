@@ -7,6 +7,17 @@ Sucker Punch is a single-process Ruby asynchronous processing library. It's [gir
 
 Sucker Punch is perfect for asynchronous processes like emailing, data crunching, or social platform manipulation. No reason to hold up a user when you can do these things in the background within the same process as your web application...
 
+Sucker Punch is built on top of [Celluloid
+Pools](https://github.com/celluloid/celluloid/wiki/Pools). Each job is setup as
+a pool, which equates to its own queue with individual workers working against
+the jobs. Unlike most other background processing libraries, Sucker
+Punch's jobs are stored in memory. The benefit to this is there is no
+additional infrastructure requirement (ie. database, redis, etc.). The downside
+is that if the web processes is restarted and there are jobs that haven't yet
+been processed, they will be lost. For this reason, Sucker Punch is generally
+recommended for jobs that are fast and non-mission critical (ie. logs, emails,
+etc.).
+
 ## Installation
 
 Add this line to your application's Gemfile:
