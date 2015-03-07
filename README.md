@@ -158,6 +158,17 @@ require 'sucker_punch/testing/inline'
 Log.new.async.perform("login") # => Will be synchronous and block until job is finished
 ```
 
+## Rails
+
+If you're using Sucker Punch with Rails, there's a built-in generator task:
+
+```ruby
+$ rails g sucker_punch:job logger
+```
+
+would create the file `app/jobs/logger_job.rb` with a unimplemented `#perform`
+method.
+
 ## Active Job
 
 Sucker Punch has been added as an Active Job adapter in Rails 4.2.

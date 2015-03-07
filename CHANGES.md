@@ -1,3 +1,8 @@
+1.4.0
+--------
+
+- Added Rails generate task to create a job from the command line
+
 1.3.2
 --------
 
