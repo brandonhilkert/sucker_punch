@@ -149,7 +149,7 @@ is set to Rails.logger by default._
 
 You can customize how to handle uncaught exceptions that are raised by your jobs.  
 
-For example, using Rails and the ExceptionNotification gem, add a new initializer `config/sucker_punch_exception_notification.rb`:
+For example, using Rails and the ExceptionNotification gem, add a new initializer `config/initializers/sucker_punch.rb`:
 
 ```Ruby
 SuckerPunch.exception_handler { |ex| ExceptionNotifier.notify_exception(ex) }
