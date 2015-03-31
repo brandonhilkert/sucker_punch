@@ -145,6 +145,22 @@ SuckerPunch.logger # => #<Logger:0x007fa1f28b83f0>
 _Note: If Sucker Punch is being used within a Rails application, Sucker Punch's logger
 is set to Rails.logger by default._
 
+## Exceptions
+
+You can customize how uncaught exceptions raised by your jobs should be handled.  
+
+For example, using Rails and the ExceptionNotification gem, you can add a new initializer `config/sucker_punch_exception_notification.rb`:
+
+```Ruby
+SuckerPunch.exception_handler { |ex| ExceptionNotifier.notify_exception(ex) }
+```
+
+Or, using Airbrake:
+
+```Ruby
+SuckerPunch.exception_handler { |ex| Airbrake.notify(ex) }
+```
+
 ## Testing
 
 Requiring this library causes your jobs to run everything inline. So a call to the following will actually be SYNCHRONOUS:
