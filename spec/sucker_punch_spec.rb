@@ -11,4 +11,14 @@ describe SuckerPunch do
       SuckerPunch.logger = nil
     end
   end
+
+  describe '.clear_queues' do
+    it "clears SuckerPunch queues" do
+      allow(SuckerPunch::Queue).to receive(:clear_all)
+
+      SuckerPunch.clear_queues
+
+      expect(SuckerPunch::Queue).to have_received(:clear_all)
+    end
+  end
 end
