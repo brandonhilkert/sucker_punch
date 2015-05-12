@@ -1,3 +1,9 @@
+1.5.0
+--------
+
+- Allow number of workers to be up to and including 200
+- Don't clear out non-Sucker Punch Celluloid registry on boot [#113](https://github.com/brandonhilkert/sucker_punch/pull/113)
+
 1.4.0
 --------
 
