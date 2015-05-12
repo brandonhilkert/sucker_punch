@@ -34,7 +34,7 @@ module SuckerPunch
 
     def register(num_workers = DEFAULT_OPTIONS[:workers])
       num_workers ||= DEFAULT_OPTIONS[:workers]
-      raise MaxWorkersExceeded if num_workers > 100
+      raise MaxWorkersExceeded if num_workers > 200
       raise NotEnoughWorkers if num_workers < 1
 
       @mutex.synchronize {

@@ -76,7 +76,7 @@ describe SuckerPunch::Queue do
 
     context "when too many workers are specified" do
       it "raises a MaxWorkersExceeded exception" do
-        expect{ queue.register(101) }.to raise_error(SuckerPunch::Queue::MaxWorkersExceeded)
+        expect{ queue.register(201) }.to raise_error(SuckerPunch::Queue::MaxWorkersExceeded)
       end
     end
 
