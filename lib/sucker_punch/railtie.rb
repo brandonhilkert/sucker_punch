@@ -5,7 +5,7 @@ module SuckerPunch
     end
 
     config.to_prepare do
-      Celluloid::Actor.clear_registry
+      SuckerPunch.clear_queues
     end
   end
 end

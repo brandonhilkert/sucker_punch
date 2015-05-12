@@ -6,12 +6,24 @@ module SuckerPunch
     attr_accessor :pool
 
     DEFAULT_OPTIONS = { workers: 2 }
+    PREFIX = "sucker_punch"
     class MaxWorkersExceeded < StandardError; end
     class NotEnoughWorkers < StandardError; end
 
     def self.find(klass)
       queue = self.new(klass)
       Celluloid::Actor[queue.name]
+    end
+
+    def self.clear_all
+      Celluloid::Actor.all.each do |actor|
+        registered_name = actor.registered_name.to_s
+        matches = registered_name.match(PREFIX).to_a
+
+        if matches.any?
+          Celluloid::Actor.delete(registered_name)
+        end
+      end
     end
 
     def initialize(klass)
@@ -39,7 +51,8 @@ module SuckerPunch
     end
 
     def name
-      klass.to_s.underscore.to_sym
+      klass_name = klass.to_s.underscore
+      "#{PREFIX}_#{klass_name}".to_sym
     end
 
     private

@@ -15,11 +15,37 @@ describe SuckerPunch::Queue do
     Celluloid::Actor.clear_registry
   end
 
-  describe "#find" do
+  describe ".find" do
     it "returns the Celluloid Actor from the registry" do
       SuckerPunch::Queue.new(FakeJob).register
       queue = SuckerPunch::Queue.find(FakeJob)
       queue.class == Celluloid::PoolManager
+    end
+  end
+
+  describe ".clear_all" do
+   it "removes SuckerPunch actors from Celluloid registry" do
+     sucker_punch_actor_name = "#{SuckerPunch::Queue::PREFIX}_fake_job".to_sym
+     Celluloid::Actor[sucker_punch_actor_name] = FakeJob.new
+
+     SuckerPunch::Queue.clear_all
+
+     expect(Celluloid::Actor[sucker_punch_actor_name]).to be_nil
+   end
+
+    it "does not remove non-SuckerPunch actors from Celluloid registry" do
+      class ::OtherJob
+        include ::Celluloid
+        def self.pool(options); end
+        def perform; end
+      end
+      actor_name = :other_job
+      job = OtherJob.new
+      Celluloid::Actor[actor_name] = job
+
+      SuckerPunch::Queue.clear_all
+
+      expect(Celluloid::Actor[actor_name]).to eq job
     end
   end
 
@@ -33,13 +59,19 @@ describe SuckerPunch::Queue do
     end
 
     it "registers the pool with Celluloid" do
+      expected_pool_name = "#{SuckerPunch::Queue::PREFIX}_fake_job".to_sym
+
       pool = queue.register
-      expect(Celluloid::Actor[:fake_job]).to eq(pool)
+
+      expect(Celluloid::Actor[expected_pool_name]).to eq(pool)
     end
 
     it "registers the pool with Celluloid and 3 workers" do
-      pool = queue.register(3)
-      expect(Celluloid::Actor[:fake_job].size).to eq(3)
+      expected_pool_name = "#{SuckerPunch::Queue::PREFIX}_fake_job"
+
+      queue.register(3)
+
+      expect(Celluloid::Actor[expected_pool_name].size).to eq(3)
     end
 
     context "when too many workers are specified" do
