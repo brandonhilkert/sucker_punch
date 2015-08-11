@@ -147,7 +147,7 @@ is set to Rails.logger by default._
 
 ## Exceptions
 
-You can customize how to handle uncaught exceptions that are raised by your jobs.  
+You can customize how to handle uncaught exceptions that are raised by your jobs.
 
 For example, using Rails and the ExceptionNotification gem, add a new initializer `config/initializers/sucker_punch.rb`:
 
@@ -160,6 +160,24 @@ Or, using Airbrake:
 ```Ruby
 SuckerPunch.exception_handler { |ex| Airbrake.notify(ex) }
 ```
+
+Full job data can be reported like this:
+
+```Ruby
+def perform(all, my, arguments)
+  ... your code ...
+rescue Exception
+  Airbrake.error($!, [self.class.name, all, my, arguments].inspect)
+  raise
+end
+```
+
+## Timeouts
+
+Using `Timeout` causes persistent connections to [randomly get corrupted](http://www.mikeperham.com/2015/05/08/timeout-rubys-most-dangerous-api).
+Do not use timeouts as control flow, use builtin connection timeouts.
+If you decide to use Timeout, only use it as last resort to know something went very wrong and
+ideally restart the worker process after every timeout.
 
 ## Testing
 
