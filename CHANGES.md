@@ -1,3 +1,8 @@
+1.5.1
+--------
+
+- Lock to Celluloid `0.16.0` due to `0.16.1` being [yanked](https://rubygems.org/gems/celluloid/versions)
+
 1.5.0
 --------
 
