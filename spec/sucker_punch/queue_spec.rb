@@ -19,7 +19,7 @@ describe SuckerPunch::Queue do
     it "returns the Celluloid Actor from the registry" do
       SuckerPunch::Queue.new(FakeJob).register
       queue = SuckerPunch::Queue.find(FakeJob)
-      queue.class == Celluloid::PoolManager
+      queue.class == Celluloid::Supervision::Container::Pool
     end
   end
 
@@ -55,7 +55,7 @@ describe SuckerPunch::Queue do
 
     it "initializes a celluloid pool" do
       queue.register
-      expect(queue.pool.class).to eq(Celluloid::PoolManager)
+      expect(queue.pool.superclass).to eq(Celluloid::Supervision::Container)
     end
 
     it "registers the pool with Celluloid" do

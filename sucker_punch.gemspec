@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "rspec"
   gem.add_development_dependency "rake"
   gem.add_development_dependency "pry"
+  gem.add_development_dependency "byebug"
 
-  gem.add_dependency "celluloid", "0.16.0"
+  gem.add_dependency "celluloid", "~> 0.17.1", ">= 0.17.1.2"
 end
