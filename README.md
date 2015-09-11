@@ -166,7 +166,7 @@ Full job data can be reported like this:
 ```Ruby
 def perform(all, my, arguments)
   ... your code ...
-rescue Exception
+rescue StandardError
   Airbrake.error($!, [self.class.name, all, my, arguments].inspect)
   raise
 end
