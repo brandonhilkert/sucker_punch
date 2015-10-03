@@ -1,12 +1,14 @@
 require 'sucker_punch'
-require "celluloid/proxies/abstract_proxy"
-require "celluloid/proxies/sync_proxy"
-require "celluloid/proxies/actor_proxy"
+require "celluloid/proxy/sync"
+require "celluloid/proxy/async"
+require "celluloid/proxy/cell"
 
 module Celluloid
-  class CellProxy < SyncProxy
-    def async(method_name = nil, *args, &block)
-      self
+  module Proxy
+    class Cell < Sync
+      def async(method_name = nil, *args, &block)
+        self
+      end
     end
   end
 end

@@ -110,7 +110,7 @@ class LogJob
 end
 ```
 
-If the `workers` method is not set, the default is `2`.
+If the `workers` method is not set, the default is 1 per CUP core.
 
 ## Perform In
 
