@@ -3,12 +3,10 @@ require 'thread'
 module SuckerPunch
   class Queue
     attr_reader :klass
-    attr_accessor :pool
 
-    DEFAULT_OPTIONS = { workers: 2 }
-    PREFIX = "sucker_punch"
-    class MaxWorkersExceeded < StandardError; end
-    class NotEnoughWorkers < StandardError; end
+    REGISTRY_PREFIX = "sucker_punch"
+    MaxWorkersExceeded = Class.new(StandardError)
+    NotEnoughWorkers = Class.new(StandardError)
 
     def self.find(klass)
       queue = self.new(klass)
@@ -18,7 +16,7 @@ module SuckerPunch
     def self.clear_all
       Celluloid::Actor.all.each do |actor|
         registered_name = actor.registered_name.to_s
-        matches = registered_name.match(PREFIX).to_a
+        matches = registered_name.match(REGISTRY_PREFIX).to_a
 
         if matches.any?
           Celluloid::Actor.delete(registered_name)
@@ -28,19 +26,14 @@ module SuckerPunch
 
     def initialize(klass)
       @klass = klass
-      @pool = nil
       @mutex = Mutex.new
     end
 
-    def register(num_workers = DEFAULT_OPTIONS[:workers])
-      num_workers ||= DEFAULT_OPTIONS[:workers]
-      raise MaxWorkersExceeded if num_workers > 200
-      raise NotEnoughWorkers if num_workers < 1
-
+    def register(num_workers = nil)
       @mutex.synchronize {
         unless registered?
-          initialize_celluloid_pool(num_workers)
-          register_celluloid_pool
+          pool = initialize_celluloid_pool(num_workers)
+          register_celluloid_pool(pool)
         end
       }
       self.class.find(klass)
@@ -52,16 +45,22 @@ module SuckerPunch
 
     def name
       klass_name = klass.to_s.underscore
-      "#{PREFIX}_#{klass_name}".to_sym
+      "#{REGISTRY_PREFIX}_#{klass_name}".to_sym
     end
 
     private
 
     def initialize_celluloid_pool(num_workers)
-      self.pool = klass.send(:pool, { size: num_workers })
+      if num_workers
+        raise MaxWorkersExceeded if num_workers > 200
+        raise NotEnoughWorkers if num_workers < 1
+      end
+      pool_options = {}
+      pool_options = pool_options.merge({ size: num_workers })
+      klass.pool(pool_options)
     end
 
-    def register_celluloid_pool
+    def register_celluloid_pool(pool)
       Celluloid::Actor[name] = pool
     end
   end
