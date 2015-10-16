@@ -3,7 +3,6 @@ require 'thread'
 module SuckerPunch
   class Queue
     attr_reader :klass
-    attr_accessor :pool
 
     DEFAULT_OPTIONS = { workers: 2 }
     PREFIX = "sucker_punch"
@@ -15,20 +14,8 @@ module SuckerPunch
       Celluloid::Actor[queue.name]
     end
 
-    def self.clear_all
-      Celluloid::Actor.all.each do |actor|
-        registered_name = actor.registered_name.to_s
-        matches = registered_name.match(PREFIX).to_a
-
-        if matches.any?
-          Celluloid::Actor.delete(registered_name)
-        end
-      end
-    end
-
     def initialize(klass)
       @klass = klass
-      @pool = nil
       @mutex = Mutex.new
     end
 
@@ -59,10 +46,10 @@ module SuckerPunch
     def initialize_celluloid_pool(num_workers)
       pool_class = klass
       pool_name = name
-      self.pool = Class.new(Celluloid::Supervision::Container) do
+      pool = Class.new(Celluloid::Supervision::Container) do
         pool pool_class, as: pool_name, size: num_workers
       end
-      self.pool.run!
+      pool.run!
     end
   end
 end

@@ -16,10 +16,6 @@ module SuckerPunch
   def self.exception_handler(&block)
     Celluloid.exception_handler(&block)
   end
-
-  def self.clear_queues
-    SuckerPunch::Queue.clear_all
-  end
 end
 
 require 'sucker_punch/railtie' if defined?(::Rails)

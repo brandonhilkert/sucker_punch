@@ -1,3 +1,10 @@
+2.0.0
+--------
+
+- Update to use Celluloid `0.17.2`
+- Removed the `SuckerPunch.clear_queues` method
+
+
 1.5.1
 --------
 
