@@ -40,7 +40,6 @@ module SuckerPunch
       @mutex.synchronize {
         unless registered?
           initialize_celluloid_pool(num_workers)
-          register_celluloid_pool
         end
       }
       self.class.find(klass)
@@ -58,11 +57,12 @@ module SuckerPunch
     private
 
     def initialize_celluloid_pool(num_workers)
-      self.pool = klass.send(:pool, { size: num_workers })
-    end
-
-    def register_celluloid_pool
-      Celluloid::Actor[name] = pool
+      pool_class = klass
+      pool_name = name
+      self.pool = Class.new(Celluloid::Supervision::Container) do
+        pool pool_class, as: pool_name, size: num_workers
+      end
+      self.pool.run!
     end
   end
 end
