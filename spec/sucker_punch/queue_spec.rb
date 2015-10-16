@@ -28,6 +28,11 @@ describe SuckerPunch::Queue do
     let(:queue) { SuckerPunch::Queue.new(job) }
 
     it "initializes and registers the pool with Celluloid" do
+      queue.register
+      expect(queue.pool.superclass).to eq(Celluloid::Supervision::Container)
+    end
+
+    it "registers the pool with Celluloid" do
       expected_pool_name = "#{SuckerPunch::Queue::PREFIX}_fake_job".to_sym
 
       pool = queue.register

@@ -3,7 +3,6 @@ require 'thread'
 module SuckerPunch
   class Queue
     attr_reader :klass
-    attr_accessor :pool
 
     DEFAULT_OPTIONS = { workers: 2 }
     PREFIX = "sucker_punch"
@@ -52,7 +51,6 @@ module SuckerPunch
       end
       pool.run!
     end
-
   end
 end
 
