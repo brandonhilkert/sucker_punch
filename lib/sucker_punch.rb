@@ -1,4 +1,4 @@
-require 'celluloid'
+require 'celluloid/current'
 require 'sucker_punch/core_ext'
 require 'sucker_punch/job'
 require 'sucker_punch/queue'
@@ -15,10 +15,6 @@ module SuckerPunch
 
   def self.exception_handler(&block)
     Celluloid.exception_handler(&block)
-  end
-
-  def self.clear_queues
-    SuckerPunch::Queue.clear_all
   end
 end
 
