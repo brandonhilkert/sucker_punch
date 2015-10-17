@@ -1,25 +1,37 @@
 module SuckerPunch
+  # Include this module in your job class
+  # to create asynchronous jobs:
+  #
+  # class LogJob
+  #   include SuckerPunch::Job
+  #
+  #   def perform(*args)
+  #     # log the things
+  #   end
+  # end
+  #
+  # To trigger asynchronous job:
+  #
+  #   LogJob.perform_async(1, 2, 3)
+  #
+  # Note that perform_async is a class method, perform is an instance method.
   module Job
     def self.included(base)
-      base.send(:include, ::Celluloid)
       base.extend(ClassMethods)
-
-      base.class_eval do
-        def self.new
-          define_celluloid_pool(self, @workers)
-        end
-      end
     end
 
     module ClassMethods
-      def workers(num)
-        @workers = num
+      def perform_async(*args)
+        queue = SuckerPunch::Queue::QUEUES[self.to_s]
+        queue.post(args) { |args| self.new.perform(*args) }
       end
 
-      def define_celluloid_pool(klass, num_workers)
-        SuckerPunch::Queue.new(klass).register(num_workers)
+      def perform_in(interval, *args)
+        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: SuckerPunch::Queue::QUEUES[self.to_s]) do |args|
+          self.new.perform(*args)
+        end
+        job.pending?
       end
     end
-
   end
 end
