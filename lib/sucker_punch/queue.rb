@@ -13,18 +13,19 @@ module SuckerPunch
     end
 
     def self.all
-      stats = {}
+      queues = []
 
       QUEUES.each_pair do |queue_name, pool|
-        stats[queue_name]= {
+        queues << {
+          "name" => queue_name,
           "workers" => pool.length,
           "processed" => pool.completed_task_count,
           "enqueued" => pool.queue_length,
-          "scheduled" => pool.scheduled_task_count,
+          "total" => pool.scheduled_task_count,
         }
       end
 
-      stats
+      queues
     end
   end
 end
