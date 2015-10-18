@@ -149,7 +149,7 @@ App.Components.Graph = React.createClass({
     });
   },
   render: function() {
-    return React.createElement("div", {className: "graph", style: {width: "100%", height: "200px"}, ref: "graph"}, null)
+    return React.createElement("div", {className: "graph epoch", style: {width: "100%", height: "200px"}, ref: "graph"}, null)
   }
 });
 
