@@ -1,7 +1,7 @@
 require 'test_helper'
 
 module SuckerPunch
-  module JobTest < Minitest::Test
+  class JobTest < Minitest::Test
   end
 end
 

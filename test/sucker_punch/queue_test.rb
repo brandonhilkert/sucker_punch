@@ -1,6 +1,6 @@
 require 'test_helper'
 
 module SuckerPunch
-  module QueueTest < Minitest::Test
+  class QueueTest < Minitest::Test
   end
 end
