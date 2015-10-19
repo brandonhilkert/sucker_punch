@@ -20,11 +20,13 @@ module SuckerPunch
       queues = {}
 
       QUEUES.each_pair do |queue_name, pool|
+        busy = BUSY_WORKERS[queue_name],
+
         queues[queue_name] = {
           "workers" => {
             "total" => pool.length,
-            "busy" => 0,
-            "idle" => 0,
+            "busy" => busy,
+            "idle" => pool.length - busy,
           },
           "jobs" => {
             "processed" => pool.completed_task_count,
