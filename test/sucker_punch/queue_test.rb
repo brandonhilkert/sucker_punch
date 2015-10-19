@@ -54,5 +54,10 @@ module SuckerPunch
       atomic.decrement
       assert_equal 0, atomic.value
     end
+
+    def test_provides_finder_method_for_queue
+      pool = SuckerPunch::Queue::QUEUES[@queue]
+      assert_equal pool, SuckerPunch::Queue.find(@queue)
+    end
   end
 end

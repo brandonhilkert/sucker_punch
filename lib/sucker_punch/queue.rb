@@ -24,6 +24,10 @@ module SuckerPunch
       hash.compute_if_absent(queue_name) { Concurrent::AtomicFixnum.new }
     end
 
+    def self.find(queue_name)
+      QUEUES[queue_name]
+    end
+
     def self.all
       queues = {}
 
