@@ -12,6 +12,10 @@ module SuckerPunch
       hash.compute_if_absent(queue_name) { Concurrent::ThreadPoolExecutor.new(DEFAULT_EXECUTOR_OPTIONS) }
     end
 
+    BUSY_WORKERS = Concurrent::Map.new do |hash, queue_name| #:nodoc:
+      hash.compute_if_absent(queue_name) { Concurrent::AtomicFixnum.new }
+    end
+
     def self.all
       queues = {}
 
