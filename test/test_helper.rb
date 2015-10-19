@@ -5,3 +5,4 @@ require 'pry'
 require 'minitest/autorun'
 require 'minitest/pride'
 
+SuckerPunch.logger = nil
