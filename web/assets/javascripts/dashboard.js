@@ -111,13 +111,12 @@ App.Components.Graph = React.createClass({
 
   getInitialState: function() {
     return {
-      graphData: [{label: "FakeJob", values: []}]
+      graphData: []
     };
   },
 
   componentDidMount: function() {
     this.listenForQueuesUpdate();
-    this.initGraph();
   },
   componentWillUnmount: function() {
     window.removeEventListener("queuesUpdate", this.handleQueuesUpdate, false);
@@ -127,24 +126,43 @@ App.Components.Graph = React.createClass({
   },
   handleQueuesUpdate: function(evt) {
     var queues = evt.detail.queues;
+    var graphData = this.decorateQueueDataForGraph(queues)
+    this.initGraph(graphData);
     this.pushGraphData(queues);
   },
-  pushGraphData: function(queues) {
-    var next = [];
-    Object.keys(queues).map(function(queueName) {
-      next.push({
-        time: ((new Date()).getTime() / 1000)|0,
-        y: queues[queueName].jobs.enqueued
-      });
-    });
 
+  decorateQueueDataForGraph: function(queuesData) {
+    return Object.keys(queuesData).map(function(queueName) {
+      var value = this.graphDataPoint(queuesData[queueName]);
+      return {
+        label: queueName,
+        values: [value]
+      }
+    }.bind(this));
+  },
+  pushGraphData: function(queues) {
+    console.log(queues);
+    var next = Object.keys(queues).map(function(queueName) {
+      return this.graphDataPoint(queues[queueName]);
+    }.bind(this));
+
+    console.log(next);
     this.graph.push(next);
   },
-  initGraph: function() {
+  graphDataPoint: function(queue) {
+    return {
+      time: ((new Date()).getTime() / 1000)|0,
+      y: queue.jobs.enqueued
+    };
+  },
+  getTimeValue: function() {
+    return ((new Date()).getTime() / 1000)|0;
+  },
+  initGraph: function(graphData) {
     var el = this.refs.graph;
     this.graph = $(el).epoch({
       type: 'time.line',
-      data: this.state.graphData,
+      data: graphData,
       axes: ['right', 'left']
     });
   },
