@@ -1,11 +1,22 @@
 require 'test_helper'
 
 class SuckerPunchTest < Minitest::Test
+  def teardown
+    SuckerPunch.logger = nil
+  end
+
   def test_that_it_has_a_version_number
     refute_nil ::SuckerPunch::VERSION
   end
 
   def test_logger_defaults_to_stdout
+    SuckerPunch.logger = SuckerPunch.default_logger
+    assert SuckerPunch.logger.is_a?(Logger)
+    assert_equal Logger::INFO, SuckerPunch.logger.level
+  end
+
+  def test_can_reset_logger
+    SuckerPunch.logger = nil
     assert SuckerPunch.logger.is_a?(Logger)
   end
 
