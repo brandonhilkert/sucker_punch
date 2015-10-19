@@ -23,7 +23,7 @@ module SuckerPunch
     module ClassMethods
       def perform_async(*args)
         queue = SuckerPunch::Queue::QUEUES[self.to_s]
-        queue.post(args) { |args| self.new.perform(*args) }
+        queue.post(args) { |args| __run_perform(*args) }
       end
 
       def perform_in(interval, *args)
@@ -31,6 +31,13 @@ module SuckerPunch
           self.new.perform(*args)
         end
         job.pending?
+      end
+
+      def __run_perform(*args)
+        SuckerPunch::Queue::BUSY_WORKERS[self.to_s].increment
+        self.new.perform(*args)
+      ensure
+        SuckerPunch::Queue::BUSY_WORKERS[self.to_s].decrement
       end
     end
   end
