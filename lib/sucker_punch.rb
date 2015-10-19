@@ -2,23 +2,20 @@ require 'concurrent'
 require 'sucker_punch/job'
 require 'sucker_punch/queue'
 require 'sucker_punch/version'
+require 'logger'
 
 module SuckerPunch
   class << self
-    attr_accessor :handler
+    attr_accessor :handler, :logger
 
     def exception_handler(&block)
       self.handler = block
     end
+
+    def logger
+      @logger || Logger.new(STDOUT)
+    end
   end
-  # def self.logger
-  #   Concurrent.global_logger
-  # end
-  #
-  # def self.logger=(logger)
-  #   Concurrent.global_logger = logger
-  # end
-  #
 end
 
 require 'sucker_punch/railtie' if defined?(::Rails)

@@ -5,6 +5,16 @@ class SuckerPunchTest < Minitest::Test
     refute_nil ::SuckerPunch::VERSION
   end
 
+  def test_logger_defaults_to_stdout
+    assert SuckerPunch.logger.is_a?(Logger)
+  end
+
+  def test_logger_can_be_set
+    logger = Logger.new(nil)
+    SuckerPunch.logger = logger
+    assert_equal logger, SuckerPunch.logger
+  end
+
   def test_exception_handler_can_be_set
     SuckerPunch.exception_handler { |ex| raise "bad stuff" }
     assert_raises(::RuntimeError) { SuckerPunch.handler.call }
