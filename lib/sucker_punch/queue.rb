@@ -20,7 +20,7 @@ module SuckerPunch
       queues = {}
 
       QUEUES.each_pair do |queue_name, pool|
-        busy = BUSY_WORKERS[queue_name],
+        busy = BUSY_WORKERS[queue_name].value
 
         queues[queue_name] = {
           "workers" => {
