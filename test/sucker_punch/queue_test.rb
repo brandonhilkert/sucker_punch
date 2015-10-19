@@ -28,5 +28,31 @@ module SuckerPunch
       atomic.decrement
       assert_equal 0, atomic.value
     end
+
+    def test_processed_jobs_default_is_0
+      atomic = SuckerPunch::Queue::PROCESSED_JOBS[@queue]
+      assert_equal 0, atomic.value
+    end
+
+    def test_processed_jobs_supports_incrementing_and_decrementing
+      atomic = SuckerPunch::Queue::PROCESSED_JOBS[@queue]
+      atomic.increment
+      assert_equal 1, atomic.value
+      atomic.decrement
+      assert_equal 0, atomic.value
+    end
+
+    def test_failed_jobs_default_is_0
+      atomic = SuckerPunch::Queue::FAILED_JOBS[@queue]
+      assert_equal 0, atomic.value
+    end
+
+    def test_failed_jobs_supports_incrementing_and_decrementing
+      atomic = SuckerPunch::Queue::FAILED_JOBS[@queue]
+      atomic.increment
+      assert_equal 1, atomic.value
+      atomic.decrement
+      assert_equal 0, atomic.value
+    end
   end
 end

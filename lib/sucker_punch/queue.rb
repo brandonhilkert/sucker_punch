@@ -16,11 +16,21 @@ module SuckerPunch
       hash.compute_if_absent(queue_name) { Concurrent::AtomicFixnum.new }
     end
 
+    PROCESSED_JOBS = Concurrent::Map.new do |hash, queue_name| #:nodoc:
+      hash.compute_if_absent(queue_name) { Concurrent::AtomicFixnum.new }
+    end
+
+    FAILED_JOBS = Concurrent::Map.new do |hash, queue_name| #:nodoc:
+      hash.compute_if_absent(queue_name) { Concurrent::AtomicFixnum.new }
+    end
+
     def self.all
       queues = {}
 
       QUEUES.each_pair do |queue_name, pool|
         busy = BUSY_WORKERS[queue_name].value
+        processed = PROCESSED_JOBS[queue_name].value
+        failed = FAILED_JOBS[queue_name].value
 
         queues[queue_name] = {
           "workers" => {
@@ -29,7 +39,8 @@ module SuckerPunch
             "idle" => pool.length - busy,
           },
           "jobs" => {
-            "processed" => pool.completed_task_count,
+            "processed" => processed,
+            "failed" => failed,
             "enqueued" => pool.queue_length
           }
         }
