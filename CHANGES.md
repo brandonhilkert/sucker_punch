@@ -1,4 +1,4 @@
-2.0.0
+1.6.0
 --------
 
 - Update to use Celluloid `0.17.2`
