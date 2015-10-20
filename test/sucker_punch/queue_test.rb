@@ -59,5 +59,34 @@ module SuckerPunch
       pool = SuckerPunch::Queue::QUEUES[@queue]
       assert_equal pool, SuckerPunch::Queue.find(@queue)
     end
+
+    def test_returns_queue_stats
+      latch = Concurrent::CountDownLatch.new
+
+      # run a job to setup workers
+      FakeNilJob.perform_async
+
+      pool = SuckerPunch::Queue.find("FakeNilJob")
+      pool.post { latch.count_down }
+      latch.wait(0.1)
+
+      all_stats = SuckerPunch::Queue.all
+      stats = all_stats[FakeNilJob.to_s]
+      assert stats["workers"]["total"] > 0
+      assert stats["workers"]["busy"] == 0
+      assert stats["workers"]["idle"] > 0
+      assert stats["jobs"]["processed"] > 0
+      assert stats["jobs"]["failed"] == 0
+      assert stats["jobs"]["enqueued"] == 0
+    end
+
+    private
+
+    class FakeNilJob
+      include SuckerPunch::Job
+      def perform
+        nil
+      end
+    end
   end
 end
