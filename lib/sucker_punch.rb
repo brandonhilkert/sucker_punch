@@ -1,7 +1,5 @@
 require 'concurrent'
-require 'sucker_punch/counter/busy'
-require 'sucker_punch/counter/failed'
-require 'sucker_punch/counter/processed'
+require 'sucker_punch/counter'
 require 'sucker_punch/job'
 require 'sucker_punch/queue'
 require 'sucker_punch/version'
