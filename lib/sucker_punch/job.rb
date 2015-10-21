@@ -22,12 +22,12 @@ module SuckerPunch
 
     module ClassMethods
       def perform_async(*args)
-        queue = SuckerPunch::Queue.find(self.to_s)
+        queue = SuckerPunch::Queue.find_or_create(self.to_s)
         queue.post(args) { |args| __run_perform(*args) }
       end
 
       def perform_in(interval, *args)
-        queue = SuckerPunch::Queue.find(self.to_s)
+        queue = SuckerPunch::Queue.find_or_create(self.to_s)
         job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do |args|
           self.new.perform(*args)
         end

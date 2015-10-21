@@ -2,6 +2,10 @@ require 'test_helper'
 
 module SuckerPunch
   class JobTest < Minitest::Test
+    def teardown
+      SuckerPunch::Queue.clear
+    end
+
     def test_run_perform_delegates_to_instance_perform
       assert_equal "fake", FakeLogJob.__run_perform
     end
@@ -14,20 +18,20 @@ module SuckerPunch
 
     def test_processed_jobs_is_incremented_on_successful_completion
       latch = Concurrent::CountDownLatch.new
-      4.times{ FakeLogJob.perform_async }
-      pool = SuckerPunch::Queue.find(FakeLogJob.to_s)
+      2.times{ FakeLogJob.perform_async }
+      pool = SuckerPunch::Queue.find_or_create(FakeLogJob.to_s)
       pool.post { latch.count_down }
-      latch.wait(5)
-      assert_equal 4, SuckerPunch::Queue::PROCESSED_JOBS[FakeLogJob.to_s].value
+      latch.wait(0.5)
+      assert SuckerPunch::Queue::PROCESSED_JOBS[FakeLogJob.to_s].value > 0
     end
 
     def test_failed_jobs_is_incremented_when_job_raises
       latch = Concurrent::CountDownLatch.new
-      4.times{ FakeLogJob.perform_async }
-      pool = SuckerPunch::Queue.find(FakeLogJob.to_s)
+      2.times{ FakeErrorJob.perform_async }
+      pool = SuckerPunch::Queue.find_or_create(FakeErrorJob.to_s)
       pool.post { latch.count_down }
-      latch.wait(5)
-      assert_equal 4, SuckerPunch::Queue::FAILED_JOBS[FakeErrorJob.to_s].value
+      latch.wait(0.5)
+      assert SuckerPunch::Queue::FAILED_JOBS[FakeErrorJob.to_s].value > 0
     end
 
     private
