@@ -67,7 +67,7 @@ App.Components.Queues = React.createClass({
         React.createElement("tr", null,
           React.createElement("td", null, null),
           React.createElement("td", {className: "text-center", colSpan: 3}, "Workers"),
-          React.createElement("td", {className: "text-center", colSpan: 2}, "Jobs")
+          React.createElement("td", {className: "text-center", colSpan: 3}, "Jobs")
         ),
         React.createElement("tr", null,
           React.createElement("td", null, "Name"),
@@ -75,7 +75,8 @@ App.Components.Queues = React.createClass({
           React.createElement("td", {className: "text-center"}, "Busy"),
           React.createElement("td", {className: "text-center"}, "Total"),
           React.createElement("td", {className: "text-center"}, "Enqueued"),
-          React.createElement("td", {className: "text-center"}, "Processed")
+          React.createElement("td", {className: "text-center"}, "Processed"),
+          React.createElement("td", {className: "text-center"}, "Failed")
         )
       ),
 
@@ -100,7 +101,8 @@ App.Components.Queue = React.createClass({
       React.createElement("td", {className: "text-center"}, this.props.stats.workers.busy),
       React.createElement("td", {className: "text-center"}, this.props.stats.workers.total),
       React.createElement("td", {className: "text-center"}, this.props.stats.jobs.enqueued),
-      React.createElement("td", {className: "text-center"}, this.props.stats.jobs.processed)
+      React.createElement("td", {className: "text-center"}, this.props.stats.jobs.processed),
+      React.createElement("td", {className: "text-center"}, this.props.stats.jobs.failed)
     )
   }
 });
