@@ -6,10 +6,17 @@ require 'logger'
 
 module SuckerPunch
   class << self
-    attr_accessor :handler
-
     def exception_handler(&block)
-      self.handler = block
+      @handler = block
+    end
+
+    def handler
+      @handler || method(:default_handler)
+    end
+
+    def default_handler(ex)
+      error_msg = "Job processing error: #{ex.class} #{ex}\n#{ex.backtrace.nil? ? '' : ex.backtrace.join("\n")}"
+      logger.error error_msg
     end
 
     def logger
@@ -25,6 +32,7 @@ module SuckerPunch
       l.level = Logger::INFO
       l
     end
+
   end
 end
 

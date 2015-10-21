@@ -26,14 +26,25 @@ class SuckerPunchTest < Minitest::Test
     assert_equal logger, SuckerPunch.logger
   end
 
+  def test_default_exception_handler_is_logger
+    @mock = Minitest::Mock.new
+    SuckerPunch.logger = @mock
+    @mock.expect(:error, nil, ["Job processing error: StandardError fake\n"])
+    SuckerPunch.handler.call(StandardError.new("fake"))
+    @mock.verify
+    SuckerPunch.logger = nil
+  end
+
   def test_exception_handler_can_be_set
     SuckerPunch.exception_handler { |ex| raise "bad stuff" }
     assert_raises(::RuntimeError) { SuckerPunch.handler.call }
+    SuckerPunch.exception_handler { |ex| SuckerPunch.default_handler(ex) }
   end
 
   def test_handler_yields_to_whats_passed
     SuckerPunch.exception_handler { |ex| FakeHandler.new.handle(ex) }
     assert_equal "fake", SuckerPunch.handler.call("fake")
+    SuckerPunch.exception_handler { |ex| SuckerPunch.default_handler(ex) }
   end
 
   private
