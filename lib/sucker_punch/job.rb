@@ -39,15 +39,15 @@ module SuckerPunch
       end
 
       def __run_perform(*args)
-        SuckerPunch::Queue::BUSY_WORKERS[self.to_s].increment
+        SuckerPunch::Counter::Busy.new(self.to_s).increment
         result = self.new.perform(*args)
-        SuckerPunch::Queue::PROCESSED_JOBS[self.to_s].increment
+        SuckerPunch::Counter::Processed.new(self.to_s).increment
         result
       rescue => ex
-        SuckerPunch::Queue::FAILED_JOBS[self.to_s].increment
+        SuckerPunch::Counter::Failed.new(self.to_s).increment
         SuckerPunch.handler.call(ex)
       ensure
-        SuckerPunch::Queue::BUSY_WORKERS[self.to_s].decrement
+        SuckerPunch::Counter::Busy.new(self.to_s).decrement
       end
     end
   end

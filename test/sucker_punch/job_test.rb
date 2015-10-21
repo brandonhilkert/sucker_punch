@@ -19,7 +19,7 @@ module SuckerPunch
     def test_busy_workers_is_incremented_during_job_execution
       FakeSlowJob.perform_async
       sleep 0.1
-      assert SuckerPunch::Queue::BUSY_WORKERS[FakeSlowJob.to_s].value > 0
+      assert SuckerPunch::Counter::Busy.new(FakeSlowJob.to_s).value > 0
     end
 
     def test_processed_jobs_is_incremented_on_successful_completion
@@ -28,7 +28,7 @@ module SuckerPunch
       pool = SuckerPunch::Queue.find_or_create(FakeLogJob.to_s)
       pool.post { latch.count_down }
       latch.wait(0.5)
-      assert SuckerPunch::Queue::PROCESSED_JOBS[FakeLogJob.to_s].value > 0
+      assert SuckerPunch::Counter::Processed.new(FakeLogJob.to_s).value > 0
     end
 
     def test_failed_jobs_is_incremented_when_job_raises
@@ -37,7 +37,7 @@ module SuckerPunch
       pool = SuckerPunch::Queue.find_or_create(FakeErrorJob.to_s)
       pool.post { latch.count_down }
       latch.wait(0.5)
-      assert SuckerPunch::Queue::FAILED_JOBS[FakeErrorJob.to_s].value > 0
+      assert SuckerPunch::Counter::Failed.new(FakeErrorJob.to_s).value > 0
     end
 
     private

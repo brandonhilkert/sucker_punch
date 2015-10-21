@@ -10,18 +10,6 @@ module SuckerPunch
 
     QUEUES = Concurrent::Map.new
 
-    BUSY_WORKERS = Concurrent::Map.new do |hash, name| #:nodoc:
-      hash.compute_if_absent(name) { Concurrent::AtomicFixnum.new }
-    end
-
-    PROCESSED_JOBS = Concurrent::Map.new do |hash, name| #:nodoc:
-      hash.compute_if_absent(name) { Concurrent::AtomicFixnum.new }
-    end
-
-    FAILED_JOBS = Concurrent::Map.new do |hash, name| #:nodoc:
-      hash.compute_if_absent(name) { Concurrent::AtomicFixnum.new }
-    end
-
     def self.find_or_create(name)
       QUEUES.fetch_or_store(name) do
         Concurrent::ThreadPoolExecutor.new(DEFAULT_EXECUTOR_OPTIONS)
@@ -30,18 +18,18 @@ module SuckerPunch
 
     def self.clear
       QUEUES.clear
-      BUSY_WORKERS.clear
-      PROCESSED_JOBS.clear
-      FAILED_JOBS.clear
+      SuckerPunch::Counter::Busy.clear
+      SuckerPunch::Counter::Processed.clear
+      SuckerPunch::Counter::Failed.clear
     end
 
     def self.all
       queues = {}
 
       QUEUES.each_pair do |name, pool|
-        busy = BUSY_WORKERS[name].value
-        processed = PROCESSED_JOBS[name].value
-        failed = FAILED_JOBS[name].value
+        busy = SuckerPunch::Counter::Busy.new(name).value
+        processed = SuckerPunch::Counter::Processed.new(name).value
+        failed = SuckerPunch::Counter::Failed.new(name).value
 
         queues[name] = {
           "workers" => {
