@@ -20,6 +20,10 @@ module SuckerPunch
       base.extend(ClassMethods)
     end
 
+    def logger
+      SuckerPunch.logger
+    end
+
     module ClassMethods
       def perform_async(*args)
         queue = SuckerPunch::Queue.find_or_create(self.to_s)

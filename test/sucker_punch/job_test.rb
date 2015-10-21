@@ -6,6 +6,12 @@ module SuckerPunch
       SuckerPunch::Queue.clear
     end
 
+    def test_logger_is_accessible_from_instance
+      SuckerPunch.logger = SuckerPunch.default_logger
+      assert_equal SuckerPunch.logger, FakeLogJob.new.logger
+      SuckerPunch.logger = nil
+    end
+
     def test_run_perform_delegates_to_instance_perform
       assert_equal "fake", FakeLogJob.__run_perform
     end
