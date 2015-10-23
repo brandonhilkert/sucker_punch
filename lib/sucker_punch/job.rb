@@ -45,7 +45,7 @@ module SuckerPunch
         result
       rescue => ex
         SuckerPunch::Counter::Failed.new(self.to_s).increment
-        SuckerPunch.handler.call(ex)
+        SuckerPunch.handler.call(ex, self, args)
       ensure
         SuckerPunch::Counter::Busy.new(self.to_s).decrement
       end

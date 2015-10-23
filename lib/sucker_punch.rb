@@ -15,9 +15,11 @@ module SuckerPunch
       @handler || method(:default_handler)
     end
 
-    def default_handler(ex)
-      error_msg = "Job processing error: #{ex.class} #{ex}\n#{ex.backtrace.nil? ? '' : ex.backtrace.join("\n")}"
-      logger.error error_msg
+    def default_handler(ex, klass, args)
+      msg = "Sucker Punch job error for class: '#{klass}' args: #{args}\n"
+      msg += "#{ex.class} #{ex}\n"
+      msg += "#{ex.backtrace.nil? ? '' : ex.backtrace.join("\n")}"
+      logger.error msg
     end
 
     def logger
