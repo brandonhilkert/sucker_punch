@@ -22,5 +22,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "minitest"
   gem.add_development_dependency "pry"
 
-  gem.add_dependency "concurrent-ruby", "1.0.0.pre4"
+  gem.add_dependency "concurrent-ruby", "~> 1.0.0"
 end
