@@ -1,3 +1,8 @@
+2.0.0
+-------
+
+- Refactor internals to use `concurrent-ruby`
+
 1.6.0
 --------
 

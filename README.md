@@ -3,18 +3,25 @@
 [![Build Status](https://travis-ci.org/brandonhilkert/sucker_punch.png?branch=master)](https://travis-ci.org/brandonhilkert/sucker_punch)
 [![Code Climate](https://codeclimate.com/github/brandonhilkert/sucker_punch.png)](https://codeclimate.com/github/brandonhilkert/sucker_punch)
 
-Sucker Punch is a single-process Ruby asynchronous processing library. It's [girl_friday](https://github.com/mperham/girl_friday)  and DSL sugar on top of [Celluloid](https://github.com/celluloid/celluloid/). With Celluloid's actor pattern, we can do asynchronous processing within a single process. This reduces costs of hosting on a service like Heroku along with the memory footprint of having to maintain additional jobs if hosting on a dedicated server. All queues can run within a single Rails/Sinatra process.
+Sucker Punch is a single-process Ruby asynchronous processing library.
+It can do asynchronous processing within a single process. This reduces costs
+of hosting on a service like Heroku along with the memory footprint of
+having to maintain additional jobs if hosting on a dedicated server.
+All queues can run within a single Rails/Sinatra process.
 
-Sucker Punch is perfect for asynchronous processes like emailing, data crunching, or social platform manipulation. No reason to hold up a user when you can do these things in the background within the same process as your web application...
+Sucker Punch is perfect for asynchronous processes like emailing, data
+crunching, or social platform manipulation. No reason to hold up a
+user when you can do these things in the background within the same
+process as your web application...
 
-Sucker Punch is built on top of [Celluloid
-Pools](https://github.com/celluloid/celluloid/wiki/Pools). Each job is setup as
+Sucker Punch is built on top of [concurrent-ruby]
+(https://github.com/ruby-concurrency/concurrent-ruby). Each job is setup as
 a pool, which equates to its own queue with individual workers working against
 the jobs. Unlike most other background processing libraries, Sucker
 Punch's jobs are stored in memory. The benefit to this is there is no
-additional infrastructure requirement (ie. database, redis, etc.). The downside
-is that if the web processes is restarted and there are jobs that haven't yet
-been processed, they will be lost. For this reason, Sucker Punch is generally
+additional infrastructure requirement (ie. database, redis, etc.). However,
+if the web processes are restarted with jobs remaining in the queue,
+they will be lost. For this reason, Sucker Punch is generally
 recommended for jobs that are fast and non-mission critical (ie. logs, emails,
 etc.).
 
@@ -22,7 +29,7 @@ etc.).
 
 Add this line to your application's Gemfile:
 
-    gem 'sucker_punch', '~> 1.0'
+    gem 'sucker_punch', '~> 2.0'
 
 And then execute:
 
@@ -37,7 +44,7 @@ Or install it yourself as:
 Each job acts as its own queue and should be a separate Ruby class that:
 
 * includes `SuckerPunch::Job`
-* defines the instance method `perform` that includes the code the job will run when enqueued
+* defines the `perform` instance method that includes the code the job will run when enqueued
 
 
 ```Ruby
@@ -61,10 +68,13 @@ LogJob.new.perform("login")
 Asynchronous:
 
 ```Ruby
-LogJob.new.async.perform("login") # => nil
+LogJob.perform_async("login") # => nil
 ```
 
-Jobs interacting with `ActiveRecord` should take special precaution not to exhaust connections in the pool. This can be done with `ActiveRecord::Base.connection_pool.with_connection`, which ensures the connection is returned back to the pool when completed.
+Jobs interacting with `ActiveRecord` should take special precaution not to
+exhaust connections in the pool. This can be done
+with `ActiveRecord::Base.connection_pool.with_connection`, which ensures
+the connection is returned back to the pool when completed.
 
 ```Ruby
 # app/jobs/awesome_job.rb
@@ -75,7 +85,7 @@ class AwesomeJob
   def perform(user_id)
     ActiveRecord::Base.connection_pool.with_connection do
       user = User.find(user_id)
-      user.update_attributes(is_awesome: true)
+      user.update(is_awesome: true)
     end
   end
 end
@@ -91,7 +101,7 @@ class AwesomeJob
     ActiveRecord::Base.connection_pool.with_connection do
       user = User.find(user_id)
       user.update_attributes(is_awesome: true)
-      LogJob.new.async.perform("User #{user.id} became awesome!")
+      LogJob.perform_async("User #{user.id} became awesome!")
     end
   end
 end
@@ -115,24 +125,19 @@ If the `workers` method is not set, the default is `2`.
 ## Perform In
 
 Many background processing libraries have methods to perform operations after a
-certain amount of time. Fortunately, timers are built-in to Celluloid, so you
-can take advantage of them with the `later` method:
+certain amount of time and Sucker Punch is no different.
 
 ``` ruby
-class Job
+class DataJob
   include SuckerPunch::Job
 
   def perform(data)
     puts data
   end
-
-  def later(sec, data)
-    after(sec) { perform(data) }
-  end
 end
 
-Job.new.async.perform("asdf")
-Job.new.async.later(60, "asdf") # `perform` will be excuted 60 sec. later
+DataJob.perform_async("asdf") # immediately perform asynchronously
+DataJob.perform_in(60, "asdf") # `perform` will be excuted 60 sec. later
 ```
 
 ## Logger
@@ -149,39 +154,31 @@ is set to Rails.logger by default._
 
 You can customize how to handle uncaught exceptions that are raised by your jobs.
 
-For example, using Rails and the ExceptionNotification gem, add a new initializer `config/initializers/sucker_punch.rb`:
+For example, using Rails and the ExceptionNotification gem,
+add a new initializer `config/initializers/sucker_punch.rb`:
 
 ```Ruby
-SuckerPunch.exception_handler { |ex| ExceptionNotifier.notify_exception(ex) }
+SuckerPunch.exception_handler { |ex, klass, args| ExceptionNotifier.notify_exception(ex) }
 ```
 
 Or, using Airbrake:
 
 ```Ruby
-SuckerPunch.exception_handler { |ex| Airbrake.notify(ex) }
-```
-
-Full job data can be reported like this:
-
-```Ruby
-def perform(all, my, arguments)
-  ... your code ...
-rescue StandardError
-  Airbrake.error($!, [self.class.name, all, my, arguments].inspect)
-  raise
-end
+SuckerPunch.exception_handler { |ex, klass, args| Airbrake.notify(ex) }
 ```
 
 ## Timeouts
 
-Using `Timeout` causes persistent connections to [randomly get corrupted](http://www.mikeperham.com/2015/05/08/timeout-rubys-most-dangerous-api).
-Do not use timeouts as control flow, use builtin connection timeouts.
+Using `Timeout` causes persistent connections to
+[randomly get corrupted](http://www.mikeperham.com/2015/05/08/timeout-rubys-most-dangerous-api).
+Do not use timeouts as control flow, use built-in connection timeouts.
 If you decide to use Timeout, only use it as last resort to know something went very wrong and
 ideally restart the worker process after every timeout.
 
 ## Testing
 
-Requiring this library causes your jobs to run everything inline. So a call to the following will actually be SYNCHRONOUS:
+Requiring this library causes your jobs to run everything inline.
+So a call to the following will actually be SYNCHRONOUS:
 
 ```Ruby
 # spec/spec_helper.rb
@@ -189,7 +186,7 @@ require 'sucker_punch/testing/inline'
 ```
 
 ```Ruby
-Log.new.async.perform("login") # => Will be synchronous and block until job is finished
+LogJob.perform_async("login") # => Will be synchronous and block until job is finished
 ```
 
 ## Rails
@@ -230,27 +227,9 @@ end
 ### Initializers for forking servers (Unicorn, Passenger, etc.)
 
 Previously, Sucker Punch required an initializer and that posed problems for
-Unicorn and Passenger and other servers that fork.  Version 1 was rewritten to
+servers that fork (ie. Unicorn and Passenger). Version 1 was rewritten to
 not require any special code to be executed after forking occurs. Please remove
  if you're using version `>= 1.0.0`
-
-### Class naming
-
-Job classes are ultimately Celluloid Actor classes. As a result, class names
-are susceptible to being clobbered by Celluloid's internal classes.  To ensure
-the intended application class is loaded, preface classes with `::`, or use
-names like `NotificationsMailer` or `UserMailer`. Example:
-
-```Ruby
-class EmailJob
-  include SuckerPunch::Job
-
-  def perform(contact)
-    @contact = contact
-    ::Notifications.contact_form(@contact).deliver # => If you don't use :: in this case, the notifications class from Celluloid will be loaded
-  end
-end
-```
 
 ### Cleaning test data transactions
 
@@ -297,12 +276,6 @@ describe EmailJob, job: true do
   end
 end
 ```
-
-## Gem Name
-
-...is awesome. But I can't take credit for it. Thanks to
-[@jmazzi](https://twitter.com/jmazzi) for his superior naming skills. If you're
-looking for a name for something, he is the one to go to.
 
 ## Contributing
 
