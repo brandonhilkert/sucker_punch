@@ -19,7 +19,7 @@ module SuckerPunch
 
       include Utilities
 
-      COUNTER = Concurrent::Map.new do |hash, name| #:nodoc:
+      COUNTER = Concurrent::Map.new do |hash, name|
         hash.compute_if_absent(name) { Concurrent::AtomicFixnum.new }
       end
 
@@ -37,7 +37,7 @@ module SuckerPunch
 
       include Utilities
 
-      COUNTER = Concurrent::Map.new do |hash, name| #:nodoc:
+      COUNTER = Concurrent::Map.new do |hash, name|
         hash.compute_if_absent(name) { Concurrent::AtomicFixnum.new }
       end
 
@@ -55,7 +55,7 @@ module SuckerPunch
 
       include Utilities
 
-      COUNTER = Concurrent::Map.new do |hash, name| #:nodoc:
+      COUNTER = Concurrent::Map.new do |hash, name|
         hash.compute_if_absent(name) { Concurrent::AtomicFixnum.new }
       end
 

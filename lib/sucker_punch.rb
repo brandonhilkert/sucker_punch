@@ -1,4 +1,5 @@
 require 'concurrent'
+require 'sucker_punch/core_ext'
 require 'sucker_punch/counter'
 require 'sucker_punch/job'
 require 'sucker_punch/queue'

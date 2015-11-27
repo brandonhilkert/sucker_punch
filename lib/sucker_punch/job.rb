@@ -4,6 +4,7 @@ module SuckerPunch
   #
   # class LogJob
   #   include SuckerPunch::Job
+  #   workers 4
   #
   #   def perform(*args)
   #     # log the things
@@ -18,6 +19,9 @@ module SuckerPunch
   module Job
     def self.included(base)
       base.extend(ClassMethods)
+      base.class_attribute :num_workers
+
+      base.num_workers = 2
     end
 
     def logger
@@ -26,16 +30,20 @@ module SuckerPunch
 
     module ClassMethods
       def perform_async(*args)
-        queue = SuckerPunch::Queue.find_or_create(self.to_s)
+        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
         queue.post(args) { |args| __run_perform(*args) }
       end
 
       def perform_in(interval, *args)
-        queue = SuckerPunch::Queue.find_or_create(self.to_s)
+        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
         job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do |args|
           self.new.perform(*args)
         end
         job.pending?
+      end
+
+      def workers(num)
+        self.num_workers = num
       end
 
       def __run_perform(*args)

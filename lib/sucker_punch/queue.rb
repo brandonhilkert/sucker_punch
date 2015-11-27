@@ -10,9 +10,13 @@ module SuckerPunch
 
     QUEUES = Concurrent::Map.new
 
-    def self.find_or_create(name)
+    def self.find_or_create(name, num_workers = 2)
       QUEUES.fetch_or_store(name) do
-        Concurrent::ThreadPoolExecutor.new(DEFAULT_EXECUTOR_OPTIONS)
+        options = DEFAULT_EXECUTOR_OPTIONS.merge({
+          min_threads: num_workers,
+          max_threads: num_workers
+        })
+        Concurrent::ThreadPoolExecutor.new(options)
       end
     end
 

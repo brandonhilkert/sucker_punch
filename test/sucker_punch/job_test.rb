@@ -6,10 +6,38 @@ module SuckerPunch
       SuckerPunch::Queue.clear
     end
 
+    def test_default_workers_is_2
+      assert_equal 2, FakeLogJob.num_workers
+    end
+
+    def test_can_set_workers_count
+      FakeLogJob.workers(4)
+      assert_equal 4, FakeLogJob.num_workers
+      FakeLogJob.workers(2)
+    end
+
     def test_logger_is_accessible_from_instance
       SuckerPunch.logger = SuckerPunch.default_logger
       assert_equal SuckerPunch.logger, FakeLogJob.new.logger
       SuckerPunch.logger = nil
+    end
+
+    def test_num_workers_can_be_set_by_worker_method
+      assert_equal 4, FakeWorkerJob.num_workers
+    end
+
+    def test_num_workers_is_set_when_enqueueing_job_immediately
+      FakeWorkerJob.perform_async
+      pool = SuckerPunch::Queue::QUEUES[FakeWorkerJob.to_s]
+      assert_equal 4, pool.max_length
+      assert_equal 4, pool.min_length
+    end
+
+    def test_num_workers_is_set_when_enqueueing_job_in_future
+      FakeWorkerJob.perform_in(30)
+      pool = SuckerPunch::Queue::QUEUES[FakeWorkerJob.to_s]
+      assert_equal 4, pool.max_length
+      assert_equal 4, pool.min_length
     end
 
     def test_run_perform_delegates_to_instance_perform
@@ -51,6 +79,14 @@ module SuckerPunch
 
     class FakeLogJob
       include SuckerPunch::Job
+      def perform
+        "fake"
+      end
+    end
+
+    class FakeWorkerJob
+      include SuckerPunch::Job
+      workers 4
       def perform
         "fake"
       end

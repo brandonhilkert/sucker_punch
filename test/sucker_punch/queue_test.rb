@@ -17,6 +17,18 @@ module SuckerPunch
       assert pool.is_a?(Concurrent::ThreadPoolExecutor)
     end
 
+    def test_queue_is_created_with_2_workers
+      pool = SuckerPunch::Queue.find_or_create(@queue)
+      assert_equal 2, pool.max_length
+      assert_equal 2, pool.min_length
+    end
+
+    def test_queue_num_workers_can_be_set
+      pool = SuckerPunch::Queue.find_or_create(@queue, 4)
+      assert_equal 4, pool.max_length
+      assert_equal 4, pool.min_length
+    end
+
     def test_same_queue_is_returned_on_subsequent_queries
       SuckerPunch::Queue::QUEUES.clear
       pool = SuckerPunch::Queue.find_or_create(@queue)
