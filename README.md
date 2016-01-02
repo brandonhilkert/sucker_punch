@@ -59,17 +59,19 @@ class LogJob
 end
 ```
 
-Synchronous:
+### Synchronous
 
 ```Ruby
 LogJob.new.perform("login")
 ```
 
-Asynchronous:
+### Asynchronous
 
 ```Ruby
 LogJob.perform_async("login") # => nil
 ```
+
+### `ActiveRecord` Connection Pool Connections
 
 Jobs interacting with `ActiveRecord` should take special precaution not to
 exhaust connections in the pool. This can be done
@@ -107,7 +109,11 @@ class AwesomeJob
 end
 ```
 
-The number of workers can be set from the Job using the `workers` method:
+### Configure the # of the Workers
+
+The default number of workers (threads) running against your job is `2`. If
+you'd like to configure this manually, the number of workers can be
+set on the job using the `workers` class method:
 
 ```Ruby
 class LogJob
@@ -120,12 +126,12 @@ class LogJob
 end
 ```
 
-If the `workers` method is not set, the default is `2`.
-
-## Perform In
+### Executing Jobs in the Future
 
 Many background processing libraries have methods to perform operations after a
-certain amount of time and Sucker Punch is no different.
+certain amount of time and Sucker Punch is no different. Use the `perform_in`
+with an argument of the number of seconds in the future you would like the job
+to job to run.
 
 ``` ruby
 class DataJob
@@ -140,7 +146,7 @@ DataJob.perform_async("asdf") # immediately perform asynchronously
 DataJob.perform_in(60, "asdf") # `perform` will be excuted 60 sec. later
 ```
 
-## Logger
+### Logger
 
 ```Ruby
 SuckerPunch.logger = Logger.new('sucker_punch.log')
@@ -150,7 +156,7 @@ SuckerPunch.logger # => #<Logger:0x007fa1f28b83f0>
 _Note: If Sucker Punch is being used within a Rails application, Sucker Punch's logger
 is set to Rails.logger by default._
 
-## Exceptions
+### Exceptions
 
 You can customize how to handle uncaught exceptions that are raised by your jobs.
 
@@ -171,7 +177,7 @@ Or, using Airbrake:
 SuckerPunch.exception_handler { |ex, klass, args| Airbrake.notify(ex) }
 ```
 
-## Timeouts
+### Timeouts
 
 Using `Timeout` causes persistent connections to
 [randomly get corrupted](http://www.mikeperham.com/2015/05/08/timeout-rubys-most-dangerous-api).
