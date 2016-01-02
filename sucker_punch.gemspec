@@ -13,10 +13,14 @@ Gem::Specification.new do |gem|
   gem.homepage      = "https://github.com/brandonhilkert/sucker_punch"
   gem.license       = "MIT"
 
+  gem.required_ruby_version = '>= 2.0.0'
+
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
+
+  gem.post_install_message = "Sucker Punch Version 2.0 introduces backwards-incompatible changes. Please see https://github.com/brandonhilkert/sucker_punch/blob/master/CHANGES.md#20 for details."
 
   gem.add_development_dependency "rake", "~> 10.0"
   gem.add_development_dependency "minitest"
