@@ -1,5 +1,5 @@
 module SuckerPunch
-  module Shutdown
+  module ShutdownMode
     class Hard
       def shutdown(job, queue)
         queue.kill
@@ -24,9 +24,9 @@ module SuckerPunch
       end
     end
 
-    SHUTDOWN_MODES = Hash.new(SuckerPunch::Shutdown::Soft).merge(
-      hard: SuckerPunch::Shutdown::Hard,
-      none: SuckerPunch::Shutdown::None,
+    SHUTDOWN_MODES = Hash.new(SuckerPunch::ShutdownMode::Soft).merge(
+      hard: SuckerPunch::ShutdownMode::Hard,
+      none: SuckerPunch::ShutdownMode::None,
     )
 
     def self.mode(mode)

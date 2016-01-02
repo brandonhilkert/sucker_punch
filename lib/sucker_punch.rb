@@ -4,7 +4,7 @@ require 'sucker_punch/core_ext'
 require 'sucker_punch/counter'
 require 'sucker_punch/job'
 require 'sucker_punch/queue'
-require 'sucker_punch/shutdown'
+require 'sucker_punch/shutdown_mode'
 require 'sucker_punch/version'
 require 'logger'
 
@@ -39,12 +39,12 @@ module SuckerPunch
       l
     end
 
-    def shutdown
-      @shutdown || :soft
+    def shutdown_mode
+      @shutdown_mode || :soft
     end
 
-    def shutdown=(mode)
-      @shutdown = mode.to_sym
+    def shutdown_mode=(mode)
+      @shutdown_mode = mode.to_sym if mode
     end
   end
 end

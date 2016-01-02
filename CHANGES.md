@@ -22,18 +22,18 @@
 
 - Drop support for Ruby `< 2.0`
 
-- Allow configuration of queue shutdown:
+- Allow configuration of queue shutdown mode:
 
     ```ruby
     # Currently running jobs are allowed to complete, but queued jobs are
     discarded
-    SuckerPunch.shutdown = :soft # DEFAULT
+    SuckerPunch.shutdown_mode = :soft # DEFAULT
 
     # All jobs are terminated immediately (both currently running and queued)
-    SuckerPunch.shutdown = :hard
+    SuckerPunch.shutdown_mode = :hard
 
     # Shutdown is blocked until both running and queued jobs complete
-    SuckerPunch.shutdown = :none
+    SuckerPunch.shutdown_mode = :none
     ```
 
 1.6.0

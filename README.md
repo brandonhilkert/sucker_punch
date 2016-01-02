@@ -182,13 +182,13 @@ SuckerPunch.exception_handler { |ex, klass, args| Airbrake.notify(ex) }
 ```ruby
 # Currently running jobs are allowed to complete, but queued jobs are
 discarded
-SuckerPunch.shutdown = :soft # DEFAULT
+SuckerPunch.shutdown_mode = :soft # DEFAULT
 
 # All jobs are terminated immediately (both currently running and queued)
-SuckerPunch.shutdown = :hard
+SuckerPunch.shutdown_mode = :hard
 
 # Shutdown is blocked until both running and queued jobs complete
-SuckerPunch.shutdown = :none
+SuckerPunch.shutdown_mode = :none
 ```
 
 #### Timeouts
