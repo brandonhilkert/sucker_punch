@@ -20,7 +20,21 @@
     LogJob.perform_async("login") # => nil
     ```
 
-- Drop support for Ruby < `2.0`
+- Drop support for Ruby `< 2.0`
+
+- Allow configuration of queue shutdown:
+
+    ```ruby
+    # Currently running jobs are allowed to complete, but queued jobs are
+    discarded
+    SuckerPunch.shutdown = :soft # DEFAULT
+
+    # All jobs are terminated immediately (both currently running and queued)
+    SuckerPunch.shutdown = :hard
+
+    # Shutdown is blocked until both running and queued jobs complete
+    SuckerPunch.shutdown = :none
+    ```
 
 1.6.0
 --------

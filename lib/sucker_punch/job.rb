@@ -22,6 +22,8 @@ module SuckerPunch
       base.class_attribute :num_workers
 
       base.num_workers = 2
+
+      ::Concurrent::AtExit.add { base.shutdown }
     end
 
     def logger
@@ -56,6 +58,13 @@ module SuckerPunch
         SuckerPunch.handler.call(ex, self, args)
       ensure
         SuckerPunch::Counter::Busy.new(self.to_s).decrement
+      end
+
+      def shutdown
+        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
+        mode = SuckerPunch.shutdown
+        shutdown_class = SuckerPunch::Shutdown.mode(mode)
+        shutdown_class.new.shutdown(queue)
       end
     end
   end

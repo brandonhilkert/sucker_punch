@@ -177,6 +177,20 @@ Or, using Airbrake:
 SuckerPunch.exception_handler { |ex, klass, args| Airbrake.notify(ex) }
 ```
 
+#### Shutdown Modes
+
+```ruby
+# Currently running jobs are allowed to complete, but queued jobs are
+discarded
+SuckerPunch.shutdown = :soft # DEFAULT
+
+# All jobs are terminated immediately (both currently running and queued)
+SuckerPunch.shutdown = :hard
+
+# Shutdown is blocked until both running and queued jobs complete
+SuckerPunch.shutdown = :none
+```
+
 #### Timeouts
 
 Using `Timeout` causes persistent connections to

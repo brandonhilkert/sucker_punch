@@ -1,8 +1,10 @@
 require 'concurrent'
+require 'concurrent/utility/at_exit'
 require 'sucker_punch/core_ext'
 require 'sucker_punch/counter'
 require 'sucker_punch/job'
 require 'sucker_punch/queue'
+require 'sucker_punch/shutdown'
 require 'sucker_punch/version'
 require 'logger'
 
@@ -37,6 +39,13 @@ module SuckerPunch
       l
     end
 
+    def shutdown
+      @shutdown || :soft
+    end
+
+    def shutdown=(mode)
+      @shutdown = mode.to_sym
+    end
   end
 end
 

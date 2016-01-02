@@ -3,9 +3,9 @@ module SuckerPunch
     DEFAULT_EXECUTOR_OPTIONS = {
       min_threads:     2,
       max_threads:     2,
-      auto_terminate:  true,
       idletime:        60, # 1 minute
       max_queue:       0, # unlimited
+      auto_terminate: false # Let shutdown modes handle thread termination
     }.freeze
 
     QUEUES = Concurrent::Map.new
