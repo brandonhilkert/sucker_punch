@@ -4,10 +4,10 @@
 [![Code Climate](https://codeclimate.com/github/brandonhilkert/sucker_punch.png)](https://codeclimate.com/github/brandonhilkert/sucker_punch)
 
 Sucker Punch is a single-process Ruby asynchronous processing library.
-It can do asynchronous processing within a single process. This reduces costs
+This reduces costs
 of hosting on a service like Heroku along with the memory footprint of
 having to maintain additional jobs if hosting on a dedicated server.
-All queues can run within a single Rails/Sinatra process.
+All queues can run within a single application (eg. Rails, Sinatra, etc.) process.
 
 Sucker Punch is perfect for asynchronous processes like emailing, data
 crunching, or social platform manipulation. No reason to hold up a
@@ -158,6 +158,10 @@ For example, using Rails and the ExceptionNotification gem,
 add a new initializer `config/initializers/sucker_punch.rb`:
 
 ```Ruby
+# ex    => The caught exception object
+# klass => The job class
+# args  => An array of the args passed to the job
+
 SuckerPunch.exception_handler { |ex, klass, args| ExceptionNotifier.notify_exception(ex) }
 ```
 

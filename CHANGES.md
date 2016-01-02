@@ -2,6 +2,25 @@
 -------
 
 - Refactor internals to use `concurrent-ruby`
+- Yield more exception details to handler. The new syntax allows you to setup a
+    global exception with the following syntax:
+
+    ```ruby
+    SuckerPunch.exception_handler { |ex, klass, args| ExceptionNotifier.notify_exception(ex) }
+
+    # ex    => The caught exception object
+    # klass => The job class
+    # args  => An array of the args passed to the job
+    ```
+
+- Invoke asynchronous job via `perform_async` class method (*backwards
+    incompatible change*):
+
+    ```ruby
+    LogJob.perform_async("login") # => nil
+    ```
+
+- Drop support for Ruby < `2.0`
 
 1.6.0
 --------
