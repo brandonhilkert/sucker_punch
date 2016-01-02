@@ -64,7 +64,7 @@ module SuckerPunch
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
         mode = SuckerPunch.shutdown
         shutdown_class = SuckerPunch::Shutdown.mode(mode)
-        shutdown_class.new.shutdown(queue)
+        shutdown_class.new.shutdown(self, queue)
       end
     end
   end

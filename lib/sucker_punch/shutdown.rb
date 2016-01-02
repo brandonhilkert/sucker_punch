@@ -1,15 +1,15 @@
 module SuckerPunch
   module Shutdown
     class Hard
-      def shutdown(queue)
+      def shutdown(job, queue)
         queue.kill
-        SuckerPunch.logger.info("Hard shutdown triggered...byebye")
+        SuckerPunch.logger.info("Hard shutdown triggered for #{job}...byebye")
       end
     end
 
     class Soft
-      def shutdown(queue)
-        SuckerPunch.logger.info("Soft shutdown triggered...executing remaining in-process jobs")
+      def shutdown(job, queue)
+        SuckerPunch.logger.info("Soft shutdown triggered for #{job}...executing remaining in-process jobs")
         queue.shutdown
         queue.wait_for_termination(10)
         SuckerPunch.logger.info("Terminating...byebye")
@@ -17,8 +17,8 @@ module SuckerPunch
     end
 
     class None
-      def shutdown(queue)
-        SuckerPunch.logger.info("Shutdown triggered...excuting remaining in-process and queued jobs")
+      def shutdown(job, queue)
+        SuckerPunch.logger.info("Shutdown triggered for #{job}...excuting remaining in-process and queued jobs")
         queue.wait_for_termination
         SuckerPunch.logger.info("Terminating...byebye")
       end
