@@ -3,8 +3,7 @@ require 'test_helper'
 class SuckerPunchTest < Minitest::Test
   def teardown
     SuckerPunch.logger = nil
-    SuckerPunch.exception_handler { |ex, klass, args| SuckerPunch.default_handler(ex, klass, args) }
-    SuckerPunch.shutdown_mode = :soft
+    SuckerPunch.exception_handler = nil
   end
 
   def test_that_it_has_a_version_number
@@ -32,34 +31,19 @@ class SuckerPunchTest < Minitest::Test
     @mock = Minitest::Mock.new
     SuckerPunch.logger = @mock
     @mock.expect(:error, nil, ["Sucker Punch job error for class: '' args: []\nStandardError fake\n"])
-    SuckerPunch.handler.call(StandardError.new("fake"), '', [])
-    @mock.verify
+    SuckerPunch.exception_handler.call(StandardError.new("fake"), '', [])
+    assert @mock.verify
   end
 
   def test_exception_handler_can_be_set
-    SuckerPunch.exception_handler { |ex, _, _| raise "bad stuff" }
-    assert_raises(::RuntimeError) { SuckerPunch.handler.call }
+    SuckerPunch.exception_handler = -> (ex, _, _) { raise "bad stuff" }
+    assert_raises(::RuntimeError) { SuckerPunch.exception_handler.call(StandardError.new("bad"), nil, nil) }
   end
 
-  def test_handler_yields_to_whats_passed
-    SuckerPunch.exception_handler { |ex, klass, args| FakeHandler.new.handle(ex, klass, args) }
-    assert_equal ["fake", nil, []], SuckerPunch.handler.call("fake", nil, [])
-  end
-
-  def test_default_shutdown_mode_is_soft
-    SuckerPunch.shutdown_mode = nil
-    assert_equal :soft, SuckerPunch.shutdown_mode
-  end
-
-  def test_can_set_shutdown_mode
-    SuckerPunch.shutdown_mode = :hard
-    assert_equal :hard, SuckerPunch.shutdown_mode
-  end
-
-  private
-
-  class FakeHandler
-    def handle(ex, klass, args); [ex, klass, args]; end
+  def test_shutdown_handler_can_be_set
+    shutdowns = Array.new
+    SuckerPunch.shutdown_handler = -> { shutdowns.push(true) }
+    SuckerPunch.shutdown_handler.call
+    assert_equal 1, shutdowns.size
   end
 end
-

@@ -58,7 +58,7 @@ module SuckerPunch
       queue.pool.post { latch.count_down }
       latch.wait(0.1)
 
-      all_stats = SuckerPunch::Queue.all
+      all_stats = SuckerPunch::Queue.stats
       stats = all_stats[FakeNilJob.to_s]
       assert stats["workers"]["total"] > 0
       assert stats["workers"]["busy"] == 0

@@ -10,7 +10,7 @@
     # klass => The job class
     # args  => An array of the args passed to the job
 
-    SuckerPunch.exception_handler { |ex, klass, args| ExceptionNotifier.notify_exception(ex) }
+    SuckerPunch.exception_handler = -> (ex, klass, args) { ExceptionNotifier.notify_exception(ex) }
     ```
 
 - Invoke asynchronous job via `perform_async` class method (*backwards
@@ -21,19 +21,10 @@
     ```
 
 - Drop support for Ruby `< 2.0`
-
-- Allow configuration of queue shutdown mode:
+- Allow shutdown handler to be set:
 
     ```ruby
-    # Currently running jobs are allowed to complete, but queued jobs are
-    discarded
-    SuckerPunch.shutdown_mode = :soft # DEFAULT
-
-    # All jobs are terminated immediately (both currently running and queued)
-    SuckerPunch.shutdown_mode = :hard
-
-    # Shutdown is blocked until both running and queued jobs complete
-    SuckerPunch.shutdown_mode = :none
+    SuckerPunch.shutdown_handler = -> { # do something special }
     ```
 
 1.6.0

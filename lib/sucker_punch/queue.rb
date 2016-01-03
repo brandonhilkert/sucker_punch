@@ -22,6 +22,14 @@ module SuckerPunch
       new(name, pool)
     end
 
+    def self.all
+      queues = Concurrent::Array.new
+      QUEUES.each_pair do |name, pool|
+        queues.push new(name, pool)
+      end
+      queues
+    end
+
     def self.clear
       QUEUES.clear
       SuckerPunch::Counter::Busy.clear
@@ -29,7 +37,7 @@ module SuckerPunch
       SuckerPunch::Counter::Failed.clear
     end
 
-    def self.all
+    def self.stats
       queues = {}
 
       QUEUES.each_pair do |name, pool|

@@ -5,18 +5,16 @@ Bundler.require(:default)
 
 require_relative '../lib/sucker_punch'
 
-SuckerPunch.shutdown_mode = :soft
-
 class CountdownJob
   include SuckerPunch::Job
 
   def perform(i)
     sleep 0.1
-    puts "Executing job #{i}"
+    print "Executing job #{i}\n"
   end
 end
 
-puts "Enqueuing 500 jobs..."
+puts "Enqueuing 100 jobs..."
 
-500.times { |i| CountdownJob.perform_async(i) }
-sleep 2
+100.times { |i| CountdownJob.perform_async(i) }
+sleep 0.5

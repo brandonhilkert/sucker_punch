@@ -22,8 +22,6 @@ module SuckerPunch
       base.class_attribute :num_workers
 
       base.num_workers = 2
-
-      ::Concurrent::AtExit.add { base.shutdown }
     end
 
     def logger
@@ -32,14 +30,16 @@ module SuckerPunch
 
     module ClassMethods
       def perform_async(*args)
+        return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
         queue.pool.post(args) { |args| __run_perform(*args) }
       end
 
       def perform_in(interval, *args)
+        return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue.pool) do |args|
-          self.new.perform(*args)
+        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue.pool) do
+          __run_perform(*args)
         end
         job.pending?
       end
@@ -55,16 +55,9 @@ module SuckerPunch
         result
       rescue => ex
         SuckerPunch::Counter::Failed.new(self.to_s).increment
-        SuckerPunch.handler.call(ex, self, args)
+        SuckerPunch.exception_handler.call(ex, self, args)
       ensure
         SuckerPunch::Counter::Busy.new(self.to_s).decrement
-      end
-
-      def shutdown
-        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        mode = SuckerPunch.shutdown_mode
-        shutdown_class = SuckerPunch::ShutdownMode.mode(mode)
-        shutdown_class.new.shutdown(queue)
       end
     end
   end
