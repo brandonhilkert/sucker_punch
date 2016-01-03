@@ -11,7 +11,6 @@ module SuckerPunch
       def shutdown(job, queue)
         SuckerPunch.logger.info("Soft shutdown triggered for #{job}...executing remaining in-process jobs")
         queue.shutdown
-        queue.wait_for_termination(10)
         SuckerPunch.logger.info("Terminating...byebye")
       end
     end
