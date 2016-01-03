@@ -5,14 +5,18 @@ Bundler.require(:default)
 
 require_relative '../lib/sucker_punch'
 
-SuckerPunch.shutdown_mode = :soft
+SuckerPunch.shutdown_mode = :none
 
 class CountdownJob
   include SuckerPunch::Job
 
   def perform(i)
     sleep 0.1
-    puts "Executing job #{i}"
+    # Interestingly, #puts is not thread-safe. Under the hood it's two calls to #print.
+    # The first call prints your string and the second call prints a newline.
+    # With concurrent operations this can lead to interleaved output.
+    # Using #print directly with an explicit newline avoids this problem.
+    print "Executing job #{i}\n"
   end
 end
 
