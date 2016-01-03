@@ -33,12 +33,12 @@ module SuckerPunch
     module ClassMethods
       def perform_async(*args)
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        queue.post(args) { |args| __run_perform(*args) }
+        queue.pool.post(args) { |args| __run_perform(*args) }
       end
 
       def perform_in(interval, *args)
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do |args|
+        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue.pool) do |args|
           self.new.perform(*args)
         end
         job.pending?
@@ -64,7 +64,7 @@ module SuckerPunch
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
         mode = SuckerPunch.shutdown_mode
         shutdown_class = SuckerPunch::ShutdownMode.mode(mode)
-        shutdown_class.new.shutdown(self, queue)
+        shutdown_class.new.shutdown(queue)
       end
     end
   end

@@ -53,8 +53,8 @@ module SuckerPunch
     def test_processed_jobs_is_incremented_on_successful_completion
       latch = Concurrent::CountDownLatch.new
       2.times{ FakeLogJob.perform_async }
-      pool = SuckerPunch::Queue.find_or_create(FakeLogJob.to_s)
-      pool.post { latch.count_down }
+      queue = SuckerPunch::Queue.find_or_create(FakeLogJob.to_s)
+      queue.pool.post { latch.count_down }
       latch.wait(0.5)
       assert SuckerPunch::Counter::Processed.new(FakeLogJob.to_s).value > 0
     end
@@ -62,8 +62,8 @@ module SuckerPunch
     def test_failed_jobs_is_incremented_when_job_raises
       latch = Concurrent::CountDownLatch.new
       2.times{ FakeErrorJob.perform_async }
-      pool = SuckerPunch::Queue.find_or_create(FakeErrorJob.to_s)
-      pool.post { latch.count_down }
+      queue = SuckerPunch::Queue.find_or_create(FakeErrorJob.to_s)
+      queue.pool.post { latch.count_down }
       latch.wait(0.5)
       assert SuckerPunch::Counter::Failed.new(FakeErrorJob.to_s).value > 0
     end
