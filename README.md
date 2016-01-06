@@ -168,13 +168,26 @@ add a new initializer `config/initializers/sucker_punch.rb`:
 # klass => The job class
 # args  => An array of the args passed to the job
 
-SuckerPunch.exception_handler { |ex, klass, args| ExceptionNotifier.notify_exception(ex) }
+SuckerPunch.exception_handler = -> (ex, klass, args) { ExceptionNotifier.notify_exception(ex) }
 ```
 
 Or, using Airbrake:
 
 ```Ruby
-SuckerPunch.exception_handler { |ex, klass, args| Airbrake.notify(ex) }
+SuckerPunch.exception_handler = -> (ex, klass, args) { Airbrake.notify(ex) }
+```
+
+#### Shutdown Handler
+
+Because Sucker Punch jobs are held in memory, when the application exits,
+queued jobs are lost. As a result, shutdown semantics are important to
+understand and consider. The default behavior is to allow all jobs current
+running to complete, but abandon remaining jobs in the queue. If this behavior
+isn't a good fit for the application, the shutdown behavior can be overridden
+by providing a lambda to the `shutdown_handler` writer:
+
+```ruby
+  SuckerPunch.shutdown_handler = -> { # do something special }
 ```
 
 #### Timeouts

@@ -10,7 +10,7 @@
     # klass => The job class
     # args  => An array of the args passed to the job
 
-    SuckerPunch.exception_handler { |ex, klass, args| ExceptionNotifier.notify_exception(ex) }
+    SuckerPunch.exception_handler = -> (ex, klass, args) { ExceptionNotifier.notify_exception(ex) }
     ```
 
 - Invoke asynchronous job via `perform_async` class method (*backwards
@@ -20,7 +20,12 @@
     LogJob.perform_async("login") # => nil
     ```
 
-- Drop support for Ruby < `2.0`
+- Drop support for Ruby `< 2.0`
+- Allow shutdown handler to be set:
+
+    ```ruby
+    SuckerPunch.shutdown_handler = -> { # do something special }
+    ```
 
 1.6.0
 --------

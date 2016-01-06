@@ -13,26 +13,26 @@ module SuckerPunch
     def test_queue_is_created_if_it_doesnt_exist
       SuckerPunch::Queue::QUEUES.clear
       assert SuckerPunch::Queue::QUEUES.empty?
-      pool = SuckerPunch::Queue.find_or_create(@queue)
-      assert pool.is_a?(Concurrent::ThreadPoolExecutor)
+      queue = SuckerPunch::Queue.find_or_create(@queue)
+      assert queue.pool.is_a?(Concurrent::ThreadPoolExecutor)
     end
 
     def test_queue_is_created_with_2_workers
-      pool = SuckerPunch::Queue.find_or_create(@queue)
-      assert_equal 2, pool.max_length
-      assert_equal 2, pool.min_length
+      queue = SuckerPunch::Queue.find_or_create(@queue)
+      assert_equal 2, queue.pool.max_length
+      assert_equal 2, queue.pool.min_length
     end
 
     def test_queue_num_workers_can_be_set
-      pool = SuckerPunch::Queue.find_or_create(@queue, 4)
-      assert_equal 4, pool.max_length
-      assert_equal 4, pool.min_length
+      queue = SuckerPunch::Queue.find_or_create(@queue, 4)
+      assert_equal 4, queue.pool.max_length
+      assert_equal 4, queue.pool.min_length
     end
 
     def test_same_queue_is_returned_on_subsequent_queries
       SuckerPunch::Queue::QUEUES.clear
-      pool = SuckerPunch::Queue.find_or_create(@queue)
-      assert_equal pool, SuckerPunch::Queue.find_or_create(@queue)
+      queue = SuckerPunch::Queue.find_or_create(@queue)
+      assert_equal queue, SuckerPunch::Queue.find_or_create(@queue)
     end
 
     def test_clear_removes_queues_and_stats
@@ -54,11 +54,11 @@ module SuckerPunch
       # run a job to setup workers
       2.times { FakeNilJob.perform_async }
 
-      pool = SuckerPunch::Queue.find_or_create(FakeNilJob.to_s)
-      pool.post { latch.count_down }
+      queue = SuckerPunch::Queue.find_or_create(FakeNilJob.to_s)
+      queue.pool.post { latch.count_down }
       latch.wait(0.1)
 
-      all_stats = SuckerPunch::Queue.all
+      all_stats = SuckerPunch::Queue.stats
       stats = all_stats[FakeNilJob.to_s]
       assert stats["workers"]["total"] > 0
       assert stats["workers"]["busy"] == 0
