@@ -45,10 +45,8 @@ class SuckerPunchTest < Minitest::Test
     assert_raises(::RuntimeError) { SuckerPunch.exception_handler.call(StandardError.new("bad"), nil, nil) }
   end
 
-  def test_shutdown_handler_can_be_set
-    shutdowns = Array.new
-    SuckerPunch.shutdown_handler = -> { shutdowns.push(true) }
-    SuckerPunch.shutdown_handler.call
-    assert_equal 1, shutdowns.size
+  def test_shutdown_timeout_can_be_set
+    SuckerPunch.shutdown_timeout = 15
+    assert_equal 15, SuckerPunch.shutdown_timeout
   end
 end

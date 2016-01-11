@@ -39,39 +39,19 @@ module SuckerPunch
       l
     end
 
-    def shutdown_handler
-      @shutdown_handler || method(:default_shutdown_handler)
+    def shutdown_timeout
+      # 10 seconds on heroku, minus a grace period
+      @shutdown_timeout || 8
     end
 
-    def shutdown_handler=(handler)
-      @shutdown_handler = handler
-    end
-
-    def default_shutdown_handler
-      if SuckerPunch::RUNNING.make_false
-        logger.info("Shutdown triggered...executing remaining in-process jobs")
-
-        queues = SuckerPunch::Queue.all
-        latch = Concurrent::CountDownLatch.new(queues.length)
-
-        queues.each do |queue|
-          queue.post(latch) { |l| l.count_down }
-          queue.shutdown
-        end
-
-        if latch.wait(8) # 10 seconds on heroku, minus a grace period
-          logger.info("Remaining jobs have finished")
-        else
-          queues.each { |queue| queue.kill }
-          logger.info("Remaining jobs didn't finish in time...killing remaining jobs")
-        end
-      end
+    def shutdown_timeout=(timeout)
+      @shutdown_timeout = timeout
     end
   end
 end
 
 at_exit do
-  SuckerPunch.shutdown_handler.call
+  SuckerPunch::Queue.shutdown_all
   SuckerPunch.logger.info("All is quiet...byebye")
 end
 

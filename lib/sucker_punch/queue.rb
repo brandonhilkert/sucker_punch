@@ -66,6 +66,27 @@ module SuckerPunch
       queues
     end
 
+    def self.shutdown_all
+      if SuckerPunch::RUNNING.make_false
+        SuckerPunch.logger.info("Shutdown triggered...executing remaining in-process jobs")
+
+        queues = all
+        latch = Concurrent::CountDownLatch.new(queues.length)
+
+        queues.each do |queue|
+          queue.post(latch) { |l| l.count_down }
+          queue.shutdown
+        end
+
+        if latch.wait(SuckerPunch.shutdown_timeout)
+          SuckerPunch.logger.info("Remaining jobs have finished")
+        else
+          queues.each { |queue| queue.kill }
+          SuckerPunch.logger.info("Remaining jobs didn't finish in time...killing remaining jobs")
+        end
+      end
+    end
+
     attr_reader :name
 
     def_delegators :@pool,

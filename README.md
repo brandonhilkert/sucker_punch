@@ -177,17 +177,22 @@ Or, using Airbrake:
 SuckerPunch.exception_handler = -> (ex, klass, args) { Airbrake.notify(ex) }
 ```
 
-#### Shutdown Handler
+#### Shutdown Timeout
 
-Because Sucker Punch jobs are held in memory, when the application exits,
-queued jobs are lost. As a result, shutdown semantics are important to
-understand and consider. The default behavior is to allow all jobs current
-running to complete, but abandon remaining jobs in the queue. If this behavior
-isn't a good fit for the application, the shutdown behavior can be overridden
-by providing a lambda to the `shutdown_handler` writer:
+Sucker Punch goes through a series of checks to attempt to shut down the queues
+and their threads. A "shutdown" command is issued to the queues, which gives
+them notice but allows them to attempt to finish all remaining jobs.
+Subsequently enqueued jobs are discarded at this time.
+
+The default `shutdown_timeout` (the # of seconds to wait before forcefully
+killing the threads) is 8 sec. This is to allow applications hosted on Heroku
+to attempt to shutdown prior to the 10 sec. they give an application to
+shutdown with some buffer.
+
+To configure something other than the default 8 sec.:
 
 ```ruby
-  SuckerPunch.shutdown_handler = -> { # do something special }
+  SuckerPunch.shutdown_timeout = 15 # # of sec. to wait before killing threads
 ```
 
 #### Timeouts

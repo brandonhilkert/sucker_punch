@@ -13,18 +13,19 @@
     SuckerPunch.exception_handler = -> (ex, klass, args) { ExceptionNotifier.notify_exception(ex) }
     ```
 
-- Invoke asynchronous job via `perform_async` class method (*backwards
+- Invoke asynchronous job via `perform_async` and `perform_in` class method (*backwards
     incompatible change*):
 
     ```ruby
-    LogJob.perform_async("login") # => nil
+    LogJob.perform_async("login")
+    LogJob.perform_in(60, "login") # `perform` will be executed 60 sec. later
     ```
 
 - Drop support for Ruby `< 2.0`
-- Allow shutdown handler to be set:
+- Allow shutdown timeout to be set:
 
     ```ruby
-    SuckerPunch.shutdown_handler = -> { # do something special }
+    SuckerPunch.shutdown_timeout = 15 # time in seconds
     ```
 
 1.6.0
