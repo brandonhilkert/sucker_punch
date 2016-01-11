@@ -1,5 +1,10 @@
+require 'forwardable'
+
 module SuckerPunch
-  class Queue
+  class Queue < Concurrent::Synchronization::LockableObject
+    extend Forwardable
+    include Concurrent::ExecutorService
+
     DEFAULT_EXECUTOR_OPTIONS = {
       min_threads:     2,
       max_threads:     2,
@@ -60,18 +65,38 @@ module SuckerPunch
       queues
     end
 
-    attr_reader :name, :pool
+    attr_reader :name
+
+    def_delegators :@pool,
+      :max_length,
+      :min_length,
+      :length,
+      :queue_length#,
+      #:idletime,
+      #:max_queue,
+      #:largest_length,
+      #:scheduled_task_count,
+      #:completed_task_count,
+      #:can_overflow?,
+      #:remaining_capacity,
+      #:running?,
+      #:shuttingdown?
+
+    alias_method :total_workers, :length
+    alias_method :enqueued_jobs, :queue_length
 
     def initialize(name, pool)
+      super()
+      @running = true
       @name, @pool = name, pool
+    end
+
+    def running?
+      synchronize { @running }
     end
 
     def ==(other)
       pool == other.pool
-    end
-
-    def total_workers
-      pool.length
     end
 
     def busy_workers
@@ -90,27 +115,46 @@ module SuckerPunch
       SuckerPunch::Counter::Failed.new(name).value
     end
 
-    def enqueued_jobs
-      pool.queue_length
+    def post(*args, &block)
+      synchronize do
+        if @running
+          @pool.post(*args, &block)
+        else
+          false
+        end
+      end
     end
 
-    def shutdown_now
-      pool.kill
-      SuckerPunch.logger.info("Hard shutdown triggered for #{name}...byebye")
+    def kill
+      if can_initiate_shutdown?
+        @pool.kill
+      end
     end
 
-    def shutdown_and_finish_busy
-      SuckerPunch.logger.info("Soft shutdown triggered for #{name}...executing remaining in-process jobs")
-      pool.shutdown
-      SuckerPunch.logger.info("Terminating...byebye")
+    def shutdown
+      if can_initiate_shutdown?
+        @pool.shutdown
+      end
     end
 
-    def shutdown_and_finish_busy_and_enqueued
-      SuckerPunch.logger.info("Shutdown triggered for #{name}...excuting remaining in-process and queued jobs")
-      pool.wait_for_termination
-      SuckerPunch.logger.info("Terminating...byebye")
+    protected
+
+    def pool
+      @pool
+    end
+
+    private
+
+    def can_initiate_shutdown?
+      synchronize do
+        if @running
+          @running = false
+          true
+        else
+          false
+        end
+      end
     end
   end
 end
-
 
