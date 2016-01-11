@@ -2,6 +2,10 @@ require 'test_helper'
 
 module SuckerPunch
   class JobTest < Minitest::Test
+    def setup
+      SuckerPunch::Queue.clear
+    end
+
     def teardown
       SuckerPunch::Queue.clear
       SuckerPunch::RUNNING.make_true

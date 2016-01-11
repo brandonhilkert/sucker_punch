@@ -4,9 +4,11 @@ module SuckerPunch
   class CounterTest < Minitest::Test
     def setup
       @queue = "fake"
+      SuckerPunch::Queue.clear
     end
 
     def teardown
+      SuckerPunch::Queue.clear
       SuckerPunch::Counter::Busy.clear
       SuckerPunch::Counter::Failed.clear
       SuckerPunch::Counter::Processed.clear

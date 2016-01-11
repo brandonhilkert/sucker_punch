@@ -36,10 +36,13 @@ module SuckerPunch
     end
 
     def self.clear
+      # susceptible to race conditions--only use in testing
+      old = all
       QUEUES.clear
       SuckerPunch::Counter::Busy.clear
       SuckerPunch::Counter::Processed.clear
       SuckerPunch::Counter::Failed.clear
+      old.each { |queue| queue.kill }
     end
 
     def self.stats
