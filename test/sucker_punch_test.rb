@@ -1,7 +1,12 @@
 require 'test_helper'
 
 class SuckerPunchTest < Minitest::Test
+  def setup
+    SuckerPunch::Queue.clear
+  end
+
   def teardown
+    SuckerPunch::Queue.clear
     SuckerPunch.logger = nil
     SuckerPunch.exception_handler = nil
   end

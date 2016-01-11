@@ -4,6 +4,11 @@ module SuckerPunch
   class AsyncSyntaxTest < Minitest::Test
     def setup
       require 'sucker_punch/async_syntax'
+      SuckerPunch::Queue.clear
+    end
+
+    def teardown
+      SuckerPunch::Queue.clear
     end
 
     def test_perform_async_runs_job_asynchronously
