@@ -45,10 +45,8 @@ module SuckerPunch
     def self.stats
       queues = {}
 
-      QUEUES.each_pair do |name, pool|
-        queue = new(name, pool)
-
-        queues[name] = {
+      all.each do |queue|
+        queues[queue.name] = {
           "workers" => {
             "total" => queue.total_workers,
             "busy" => queue.busy_workers,
