@@ -56,6 +56,7 @@ module SuckerPunch
 
         queues.each do |queue|
           queue.post(latch) { |l| l.count_down }
+          queue.shutdown
         end
 
         if latch.wait(8) # 10 seconds on heroku, minus a grace period
