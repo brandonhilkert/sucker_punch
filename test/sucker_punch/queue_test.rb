@@ -35,6 +35,15 @@ module SuckerPunch
       assert_equal queue, SuckerPunch::Queue.find_or_create(@queue)
     end
 
+    def test_all_returns_all_instances_of_a_queue
+      queue1 = SuckerPunch::Queue.find_or_create("fake")
+      queue2 = SuckerPunch::Queue.find_or_create("other_fake")
+      assert SuckerPunch::Queue.all.is_a?(Array)
+      assert SuckerPunch::Queue.all.first.is_a?(SuckerPunch::Queue)
+      assert SuckerPunch::Queue.all.include?(queue1)
+      assert SuckerPunch::Queue.all.include?(queue2)
+    end
+
     def test_clear_removes_queues_and_stats
       SuckerPunch::Queue.find_or_create(@queue)
       SuckerPunch::Counter::Busy.new(@queue).increment
@@ -66,6 +75,16 @@ module SuckerPunch
       assert stats["jobs"]["processed"] > 0
       assert stats["jobs"]["failed"] == 0
       assert stats["jobs"]["enqueued"] == 0
+    end
+
+    def test_queue_name_is_accessible
+      queue = SuckerPunch::Queue.find_or_create(FakeNilJob.to_s)
+      assert_equal "SuckerPunch::QueueTest::FakeNilJob", queue.name
+    end
+
+    def test_default_running_state_is_true
+      queue = SuckerPunch::Queue.find_or_create(FakeNilJob.to_s)
+      assert_equal true, queue.running?
     end
 
     private
