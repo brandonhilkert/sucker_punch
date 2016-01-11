@@ -14,19 +14,19 @@ module SuckerPunch
       SuckerPunch::Queue::QUEUES.clear
       assert SuckerPunch::Queue::QUEUES.empty?
       queue = SuckerPunch::Queue.find_or_create(@queue)
-      assert queue.pool.is_a?(Concurrent::ThreadPoolExecutor)
+      assert queue.send(:pool).is_a?(Concurrent::ThreadPoolExecutor)
     end
 
     def test_queue_is_created_with_2_workers
       queue = SuckerPunch::Queue.find_or_create(@queue)
-      assert_equal 2, queue.pool.max_length
-      assert_equal 2, queue.pool.min_length
+      assert_equal 2, queue.max_length
+      assert_equal 2, queue.min_length
     end
 
     def test_queue_num_workers_can_be_set
       queue = SuckerPunch::Queue.find_or_create(@queue, 4)
-      assert_equal 4, queue.pool.max_length
-      assert_equal 4, queue.pool.min_length
+      assert_equal 4, queue.max_length
+      assert_equal 4, queue.min_length
     end
 
     def test_same_queue_is_returned_on_subsequent_queries
@@ -55,7 +55,7 @@ module SuckerPunch
       2.times { FakeNilJob.perform_async }
 
       queue = SuckerPunch::Queue.find_or_create(FakeNilJob.to_s)
-      queue.pool.post { latch.count_down }
+      queue.post { latch.count_down }
       latch.wait(0.1)
 
       all_stats = SuckerPunch::Queue.stats

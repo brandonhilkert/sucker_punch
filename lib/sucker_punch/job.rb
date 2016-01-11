@@ -30,15 +30,16 @@ module SuckerPunch
 
     module ClassMethods
       def perform_async(*args)
-        return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        queue.pool.post(args) { |args| __run_perform(*args) }
+        # will return false if the queue is shutting down
+        queue.post(args) { |args| __run_perform(*args) }
       end
 
       def perform_in(interval, *args)
-        return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue.pool) do
+        return unless queue.running?
+        # if the queue is shutdown before interval the job won't run
+        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do
           __run_perform(*args)
         end
         job.pending?
@@ -49,6 +50,9 @@ module SuckerPunch
       end
 
       def __run_perform(*args)
+        # break if shutdown began while I was waiting in the queue
+        return unless SuckerPunch::RUNNING.true?
+
         SuckerPunch::Counter::Busy.new(self.to_s).increment
         result = self.new.perform(*args)
         SuckerPunch::Counter::Processed.new(self.to_s).increment

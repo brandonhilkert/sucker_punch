@@ -89,7 +89,7 @@ module SuckerPunch
       latch = Concurrent::CountDownLatch.new
       2.times{ FakeLogJob.perform_async }
       queue = SuckerPunch::Queue.find_or_create(FakeLogJob.to_s)
-      queue.pool.post { latch.count_down }
+      queue.post { latch.count_down }
       latch.wait(0.2)
       assert SuckerPunch::Counter::Processed.new(FakeLogJob.to_s).value > 0
     end
@@ -105,7 +105,7 @@ module SuckerPunch
       latch = Concurrent::CountDownLatch.new
       2.times{ FakeErrorJob.perform_async }
       queue = SuckerPunch::Queue.find_or_create(FakeErrorJob.to_s)
-      queue.pool.post { latch.count_down }
+      queue.post { latch.count_down }
       latch.wait(0.2)
       assert SuckerPunch::Counter::Failed.new(FakeErrorJob.to_s).value > 0
     end
