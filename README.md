@@ -1,3 +1,5 @@
+# Notice: This README is for the `master` branch (`v2 beta`), not the latest stable branch
+
 # Sucker Punch
 
 [![Build Status](https://travis-ci.org/brandonhilkert/sucker_punch.png?branch=master)](https://travis-ci.org/brandonhilkert/sucker_punch)
@@ -68,7 +70,44 @@ LogJob.new.perform("login")
 #### Asynchronous
 
 ```Ruby
-LogJob.perform_async("login") # => nil
+LogJob.perform_async("login")
+```
+
+#### Configure the # of the Workers
+
+The default number of workers (threads) running against your job is `2`. If
+you'd like to configure this manually, the number of workers can be
+set on the job using the `workers` class method:
+
+```Ruby
+class LogJob
+  include SuckerPunch::Job
+  workers 4
+
+  def perform(event)
+    Log.new(event).track
+  end
+end
+```
+
+#### Executing Jobs in the Future
+
+Many background processing libraries have methods to perform operations after a
+certain amount of time and Sucker Punch is no different. Use the `perform_in`
+with an argument of the number of seconds in the future you would like the job
+to job to run.
+
+``` ruby
+class DataJob
+  include SuckerPunch::Job
+
+  def perform(data)
+    puts data
+  end
+end
+
+DataJob.perform_async("asdf") # immediately perform asynchronously
+DataJob.perform_in(60, "asdf") # `perform` will be excuted 60 sec. later
 ```
 
 #### `ActiveRecord` Connection Pool Connections
@@ -107,43 +146,6 @@ class AwesomeJob
     end
   end
 end
-```
-
-#### Configure the # of the Workers
-
-The default number of workers (threads) running against your job is `2`. If
-you'd like to configure this manually, the number of workers can be
-set on the job using the `workers` class method:
-
-```Ruby
-class LogJob
-  include SuckerPunch::Job
-  workers 4
-
-  def perform(event)
-    Log.new(event).track
-  end
-end
-```
-
-#### Executing Jobs in the Future
-
-Many background processing libraries have methods to perform operations after a
-certain amount of time and Sucker Punch is no different. Use the `perform_in`
-with an argument of the number of seconds in the future you would like the job
-to job to run.
-
-``` ruby
-class DataJob
-  include SuckerPunch::Job
-
-  def perform(data)
-    puts data
-  end
-end
-
-DataJob.perform_async("asdf") # immediately perform asynchronously
-DataJob.perform_in(60, "asdf") # `perform` will be excuted 60 sec. later
 ```
 
 #### Logger
