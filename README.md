@@ -43,7 +43,7 @@ Or install it yourself as:
 
 ## Backwards Compatibility
 
-The syntax to enqueue an asynchronous background job has changed from:
+In version `~> 2.0.0`, the syntax to enqueue an asynchronous background job has changed from:
 
 ```ruby
 LogJob.new.async.perform(...)
