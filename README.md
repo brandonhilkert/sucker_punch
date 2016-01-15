@@ -41,6 +41,33 @@ Or install it yourself as:
 
     $ gem install sucker_punch
 
+## Backwards Compatibility
+
+The syntax to enqueue an asynchronous background job has changed from:
+
+```ruby
+LogJob.new.async.perform(...)
+```
+
+to:
+
+
+```ruby
+LogJob.perform_async(...)
+```
+
+If you're upgrading from a pre-`2.0.0` release and want to retain the old
+syntax `LogJob.new.async.perform(...)`, you can include
+`sucker_punch/async_syntax` in your application.
+
+For Rails, you could add an initializer:
+
+```ruby
+# config/initializers/sucker_punch.rb
+
+require 'sucker_punch/async_syntax'
+```
+
 ## Usage
 
 Each job acts as its own queue and should be a separate Ruby class that:
