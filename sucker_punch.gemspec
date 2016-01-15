@@ -18,9 +18,11 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.add_development_dependency "rspec"
-  gem.add_development_dependency "rake"
+  gem.post_install_message = "Sucker Punch Version 2.0 introduces backwards-incompatible changes. Please see https://github.com/brandonhilkert/sucker_punch/blob/master/CHANGES.md#20 for details."
+
+  gem.add_development_dependency "rake", "~> 10.0"
+  gem.add_development_dependency "minitest"
   gem.add_development_dependency "pry"
 
-  gem.add_dependency "celluloid", "~> 0.17.2"
+  gem.add_dependency "concurrent-ruby", "~> 1.0.0"
 end

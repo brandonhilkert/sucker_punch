@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+require 'bundler'
+Bundler.require(:default)
+
+require_relative '../lib/sucker_punch'
+
+class CountdownJob
+  include SuckerPunch::Job
+
+  def perform(i)
+    sleep 0.1
+    print "Executing job #{i}\n"
+  end
+end
+
+puts "Enqueuing 100 jobs..."
+
+100.times { |i| CountdownJob.perform_async(i) }
+sleep 0.5

@@ -1,3 +1,33 @@
+2.0.0
+-------
+
+- Refactor internals to use `concurrent-ruby`
+- Yield more exception details to handler. The new syntax allows you to setup a
+    global exception with the following syntax:
+
+    ```ruby
+    # ex    => The caught exception object
+    # klass => The job class
+    # args  => An array of the args passed to the job
+
+    SuckerPunch.exception_handler = -> (ex, klass, args) { ExceptionNotifier.notify_exception(ex) }
+    ```
+
+- Invoke asynchronous job via `perform_async` and `perform_in` class method (*backwards
+    incompatible change*):
+
+    ```ruby
+    LogJob.perform_async("login")
+    LogJob.perform_in(60, "login") # `perform` will be executed 60 sec. later
+    ```
+
+- Drop support for Ruby `< 2.0`
+- Allow shutdown timeout to be set:
+
+    ```ruby
+    SuckerPunch.shutdown_timeout = 15 # time in seconds
+    ```
+
 1.6.0
 --------
 
