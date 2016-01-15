@@ -1,4 +1,4 @@
-2.0.0
+2.0.0.beta1
 -------
 
 - Refactor internals to use `concurrent-ruby`
