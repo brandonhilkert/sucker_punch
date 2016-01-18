@@ -21,27 +21,36 @@ module SuckerPunch
 
     def test_job_isnt_run_with_perform_async_if_sucker_punch_is_shutdown
       SuckerPunch::RUNNING.make_false
-      arr = Concurrent::Array.new
-      latch = Concurrent::CountDownLatch.new
-      FakeLatchJob.perform_async(arr, latch)
-      latch.wait(0.2)
+      arr = []
+      queue = Concurrent::ImmediateExecutor.new
+
+      SuckerPunch::Queue.stub :find_or_create, queue do
+        FakeJob.perform_async(arr)
+      end
+
       assert_equal 0, arr.size
     end
 
     def test_perform_in_runs_job_in_future
       arr = Concurrent::Array.new
       latch = Concurrent::CountDownLatch.new
-      FakeLatchJob.perform_in(0.1, arr, latch)
+      start = Concurrent.monotonic_time
+      FakeJob.perform_in(0.1, arr, latch)
       latch.wait(1)
-      assert_equal 1, arr.size
+      diff = arr.first - start
+      assert(diff > 0.0)
+      assert(diff < 0.5)
     end
 
     def test_job_isnt_run_with_perform_in_if_sucker_punch_is_shutdown
       SuckerPunch::RUNNING.make_false
-      arr = Concurrent::Array.new
-      latch = Concurrent::CountDownLatch.new
-      FakeLatchJob.perform_in(0.1, arr, latch)
-      latch.wait(0.2)
+      arr = []
+      queue = Concurrent::ImmediateExecutor.new
+
+      SuckerPunch::Queue.stub :find_or_create, queue do
+        FakeJob.perform_in(0.0, arr)
+      end
+
       assert_equal 0, arr.size
     end
 
@@ -115,6 +124,14 @@ module SuckerPunch
     end
 
     private
+
+    class FakeJob
+      include SuckerPunch::Job
+      def perform(arr, latch = nil)
+        arr.push Concurrent.monotonic_time
+        latch.count_down if latch
+      end
+    end
 
     class FakeLatchJob
       include SuckerPunch::Job
