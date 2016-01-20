@@ -57,17 +57,13 @@ module SuckerPunch
     end
 
     def test_returns_queue_stats
-      latch = Concurrent::CountDownLatch.new
+      latch = Concurrent::CountDownLatch.new(2)
 
-      # run a job to setup workers
-      2.times { FakeNilJob.perform_async }
-
-      queue = SuckerPunch::Queue.find_or_create(FakeNilJob.to_s)
-      queue.post { latch.count_down }
-      latch.wait(0.1)
+      2.times{ FakeLatchJob.perform_async(latch) }
+      latch.wait(1)
 
       all_stats = SuckerPunch::Queue.stats
-      stats = all_stats[FakeNilJob.to_s]
+      stats = all_stats[FakeLatchJob.to_s]
       assert stats["workers"]["total"] > 0
       assert stats["workers"]["busy"] == 0
       assert stats["workers"]["idle"] > 0
@@ -118,6 +114,13 @@ module SuckerPunch
     end
 
     private
+
+    class FakeLatchJob
+      include SuckerPunch::Job
+      def perform(latch)
+        latch.count_down
+      end
+    end
 
     class FakeNilJob
       include SuckerPunch::Job
