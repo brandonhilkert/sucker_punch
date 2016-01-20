@@ -60,7 +60,7 @@ module SuckerPunch
       latch = Concurrent::CountDownLatch.new(2)
 
       2.times{ FakeLatchJob.perform_async(latch) }
-      latch.wait(1)
+      latch.wait(2)
 
       all_stats = SuckerPunch::Queue.stats
       stats = all_stats[FakeLatchJob.to_s]
