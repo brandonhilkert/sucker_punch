@@ -102,6 +102,7 @@ module SuckerPunch
       latch = Concurrent::CountDownLatch.new
       FakeLatchJob.perform_in(0.1, [], latch)
       latch.wait(1)
+      sleep 0.5
       assert SuckerPunch::Counter::Processed.new(FakeLatchJob.to_s).value > 0
     end
 
