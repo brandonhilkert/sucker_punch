@@ -15,7 +15,7 @@ module SuckerPunch
       arr = Concurrent::Array.new
       latch = Concurrent::CountDownLatch.new
       FakeLatchJob.perform_async(arr, latch)
-      latch.wait(0.2)
+      latch.wait(1)
       assert_equal 1, arr.size
     end
 
@@ -24,7 +24,7 @@ module SuckerPunch
       arr = Concurrent::Array.new
       latch = Concurrent::CountDownLatch.new
       FakeLatchJob.perform_async(arr, latch)
-      latch.wait(0.2)
+      latch.wait(1)
       assert_equal 0, arr.size
     end
 
@@ -32,7 +32,7 @@ module SuckerPunch
       arr = Concurrent::Array.new
       latch = Concurrent::CountDownLatch.new
       FakeLatchJob.perform_in(0.1, arr, latch)
-      latch.wait(0.2)
+      latch.wait(1)
       assert_equal 1, arr.size
     end
 
@@ -41,7 +41,7 @@ module SuckerPunch
       arr = Concurrent::Array.new
       latch = Concurrent::CountDownLatch.new
       FakeLatchJob.perform_in(0.1, arr, latch)
-      latch.wait(0.2)
+      latch.wait(1)
       assert_equal 0, arr.size
     end
 
@@ -94,14 +94,14 @@ module SuckerPunch
       2.times{ FakeLogJob.perform_async }
       queue = SuckerPunch::Queue.find_or_create(FakeLogJob.to_s)
       queue.post { latch.count_down }
-      latch.wait(0.2)
+      latch.wait(1)
       assert SuckerPunch::Counter::Processed.new(FakeLogJob.to_s).value > 0
     end
 
     def test_processed_jobs_is_incremented_when_enqueued_with_perform_in
       latch = Concurrent::CountDownLatch.new
       FakeLatchJob.perform_in(0.1, [], latch)
-      latch.wait(0.2)
+      latch.wait(1)
       assert SuckerPunch::Counter::Processed.new(FakeLatchJob.to_s).value > 0
     end
 
@@ -110,7 +110,7 @@ module SuckerPunch
       2.times{ FakeErrorJob.perform_async }
       queue = SuckerPunch::Queue.find_or_create(FakeErrorJob.to_s)
       queue.post { latch.count_down }
-      latch.wait(0.2)
+      latch.wait(1)
       assert SuckerPunch::Counter::Failed.new(FakeErrorJob.to_s).value > 0
     end
 
