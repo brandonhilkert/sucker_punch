@@ -84,35 +84,47 @@ module SuckerPunch
     end
 
     def test_busy_workers_is_incremented_during_job_execution
-      FakeSlowJob.perform_async
-      sleep 0.1
-      assert SuckerPunch::Counter::Busy.new(FakeSlowJob.to_s).value > 0
+      job_class = Class.new(FakeBusyJob)
+      latch1 = Concurrent::CountDownLatch.new
+      latch2 = Concurrent::CountDownLatch.new
+      job_class.perform_async(latch1, latch2)
+      latch1.wait(1)
+      actual = SuckerPunch::Counter::Busy.new(job_class.to_s).value
+      latch2.count_down
+      assert actual > 0
     end
 
     def test_processed_jobs_is_incremented_on_successful_completion
-      latch = Concurrent::CountDownLatch.new
-      2.times{ FakeLogJob.perform_async }
-      queue = SuckerPunch::Queue.find_or_create(FakeLogJob.to_s)
-      queue.post { latch.count_down }
+      job_class = Class.new(FakeLatchJob)
+      jobs = 3
+      latch = Concurrent::CountDownLatch.new(jobs)
+      jobs.times{ job_class.perform_async([], latch) }
       latch.wait(1)
-      assert SuckerPunch::Counter::Processed.new(FakeLogJob.to_s).value > 0
+      queue = SuckerPunch::Queue.find_or_create(job_class.to_s)
+      queue.shutdown
+      queue.wait_for_termination(1)
+      assert SuckerPunch::Counter::Processed.new(job_class.to_s).value == jobs
     end
 
     def test_processed_jobs_is_incremented_when_enqueued_with_perform_in
+      job_class = Class.new(FakeLatchJob)
       latch = Concurrent::CountDownLatch.new
-      FakeLatchJob.perform_in(0.1, [], latch)
+      job_class.perform_in(0.0, [], latch)
       latch.wait(1)
-      sleep 0.5
-      assert SuckerPunch::Counter::Processed.new(FakeLatchJob.to_s).value > 0
+      queue = SuckerPunch::Queue.find_or_create(job_class.to_s)
+      queue.shutdown
+      queue.wait_for_termination(1)
+      assert SuckerPunch::Counter::Processed.new(job_class.to_s).value == 1
     end
 
     def test_failed_jobs_is_incremented_when_job_raises
-      latch = Concurrent::CountDownLatch.new
-      2.times{ FakeErrorJob.perform_async }
-      queue = SuckerPunch::Queue.find_or_create(FakeErrorJob.to_s)
-      queue.post { latch.count_down }
-      latch.wait(1)
-      assert SuckerPunch::Counter::Failed.new(FakeErrorJob.to_s).value > 0
+      job_class = Class.new(FakeErrorJob)
+      jobs = 3
+      jobs.times{ job_class.perform_async }
+      queue = SuckerPunch::Queue.find_or_create(job_class.to_s)
+      queue.shutdown
+      queue.wait_for_termination(1)
+      assert SuckerPunch::Counter::Failed.new(job_class.to_s).value == jobs
     end
 
     private
@@ -122,6 +134,16 @@ module SuckerPunch
       def perform(arr, latch)
         arr.push true
         latch.count_down
+      end
+    end
+
+    class FakeBusyJob
+      include SuckerPunch::Job
+      def perform(latch1, latch2)
+        # trigger the first latch to tell the test we're working
+        latch1.count_down
+        # wait for the test to tell us we can finish
+        latch2.wait(1)
       end
     end
 
