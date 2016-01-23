@@ -6,19 +6,7 @@ rvm:
   - 2.2.4
   - 2.3.0
   - ruby-head
-  - jruby-9.0.1.0
-  - jruby-9.0.3.0
-  - jruby-9.0.4.0
-  - jruby-head
-
-jdk:
-  - oraclejdk8
 
 matrix:
   allow_failures:
     - rvm: rbx-2
-    - rvm: jruby-head
-
-before_script:
-  - "echo $JAVA_OPTS"
-  - "export JAVA_OPTS=-Xmx1024m"
