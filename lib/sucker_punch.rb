@@ -52,7 +52,6 @@ end
 
 at_exit do
   SuckerPunch::Queue.shutdown_all
-  SuckerPunch.logger.info("All is quiet...byebye")
 end
 
 require 'sucker_punch/railtie' if defined?(::Rails)

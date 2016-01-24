@@ -68,7 +68,6 @@ module SuckerPunch
 
     def self.shutdown_all
       if SuckerPunch::RUNNING.make_false
-        SuckerPunch.logger.info("Shutdown triggered...executing remaining in-process jobs")
 
         queues = all
         latch = Concurrent::CountDownLatch.new(queues.length)
@@ -78,11 +77,9 @@ module SuckerPunch
           queue.shutdown
         end
 
-        if latch.wait(SuckerPunch.shutdown_timeout)
-          SuckerPunch.logger.info("Remaining jobs have finished")
-        else
+        unless latch.wait(SuckerPunch.shutdown_timeout)
           queues.each { |queue| queue.kill }
-          SuckerPunch.logger.info("Remaining jobs didn't finish in time...killing remaining jobs")
+          SuckerPunch.logger.info("Queued jobs didn't finish before shutdown_timeout...killing remaining jobs")
         end
       end
     end
