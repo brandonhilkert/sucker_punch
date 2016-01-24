@@ -1,3 +1,9 @@
+2.0.0.beta2
+-------
+
+- Made concurrent tests more reliable
+- Quieted overly verbose shutdown logs
+
 2.0.0.beta1
 -------
 
