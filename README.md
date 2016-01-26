@@ -1,5 +1,3 @@
-# Notice: This README is for the `master` branch (`v2 beta`), not the latest stable branch
-
 # Sucker Punch
 
 [![Build Status](https://travis-ci.org/brandonhilkert/sucker_punch.png?branch=master)](https://travis-ci.org/brandonhilkert/sucker_punch)

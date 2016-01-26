@@ -1,10 +1,4 @@
-2.0.0.beta2
--------
-
-- Made concurrent tests more reliable
-- Quieted overly verbose shutdown logs
-
-2.0.0.beta1
+2.0.0
 -------
 
 - Refactor internals to use `concurrent-ruby`
@@ -28,7 +22,7 @@
     ```
 
 - Drop support for Ruby `< 2.0`
-- Allow shutdown timeout to be set:
+- Allow shutdown timeout to be set (default is 10 sec.):
 
     ```ruby
     SuckerPunch.shutdown_timeout = 15 # time in seconds
