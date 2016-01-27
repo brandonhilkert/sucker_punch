@@ -22,7 +22,7 @@
     ```
 
 - Drop support for Ruby `< 2.0`
-- Allow shutdown timeout to be set (default is 10 sec.):
+- Allow shutdown timeout to be set (default is 8 sec.):
 
     ```ruby
     SuckerPunch.shutdown_timeout = 15 # time in seconds
