@@ -1,3 +1,7 @@
+2.0.1
+-------
+- Remove scripts from `bin/`
+
 2.0.0
 -------
 
