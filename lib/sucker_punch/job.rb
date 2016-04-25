@@ -50,9 +50,6 @@ module SuckerPunch
       end
 
       def __run_perform(*args)
-        # break if shutdown began while I was waiting in the queue
-        return unless SuckerPunch::RUNNING.true?
-
         SuckerPunch::Counter::Busy.new(self.to_s).increment
         result = self.new.perform(*args)
         SuckerPunch::Counter::Processed.new(self.to_s).increment

@@ -1,3 +1,9 @@
+2.0.2
+-------
+- Don't consider global shutdown bool when exhausting the queue during
+  shutdown. This led to `shutdown_timeout` not being respected when
+  processing remaining jobs left in the queue with a high `shutdown_timeout`.
+
 2.0.1
 -------
 - Remove scripts from `bin/`
