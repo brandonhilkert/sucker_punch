@@ -270,11 +270,11 @@ gem 'sucker_punch'
 And then configure the backend to use Sucker Punch:
 
 ```Ruby
-# config/initializers/sucker_punch.rb
-Rails.application.configure do
+# config/application.rb
+class Application < Rails::Application
+  # ...
   config.active_job.queue_adapter = :sucker_punch
 end
-
 ```
 
 If you want to use Sucker Punch version `2.0.0+` with Rails `< 5.0.0`, be sure
