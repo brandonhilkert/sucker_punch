@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Brandon Hilkert"]
   gem.email         = ["brandonhilkert@gmail.com"]
   gem.description   = %q{Asynchronous processing library for Ruby}
-  gem.summary       = %q{Sucker Punch is a Ruby asynchronous processing using Celluloid, heavily influenced by Sidekiq and girl_friday.}
+  gem.summary       = %q{Sucker Punch is a Ruby asynchronous processing using concurrent-ruby, heavily influenced by Sidekiq and girl_friday.}
   gem.homepage      = "https://github.com/brandonhilkert/sucker_punch"
   gem.license       = "MIT"
 
