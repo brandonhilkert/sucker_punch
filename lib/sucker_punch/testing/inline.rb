@@ -20,16 +20,11 @@ require 'sucker_punch'
 # require 'sucker_punch/testing/inline"
 #
 # LogJob.perform_async(1, 2, 3) is now synchronous
-# LogJob.perform_in(1, 2, 3) is now synchronous
 #
 module SuckerPunch
   module Job
     module ClassMethods
       def perform_async(*args)
-        self.new.perform(*args)
-      end
-
-      def perform_in(_, *args)
         self.new.perform(*args)
       end
     end
