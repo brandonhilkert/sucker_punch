@@ -14,8 +14,7 @@ crunching, or social platform manipulation. No reason to hold up a
 user when you can do these things in the background within the same
 process as your web application...
 
-Sucker Punch is built on top of [concurrent-ruby]
-(https://github.com/ruby-concurrency/concurrent-ruby). Each job is setup as
+Sucker Punch is built on top of [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby). Each job is setup as
 a pool, which equates to its own queue with individual workers working against
 the jobs. Unlike most other background processing libraries, Sucker
 Punch's jobs are stored in memory. The benefit to this is there is no
