@@ -39,10 +39,9 @@ module SuckerPunch
       def perform_in(interval, *args)
         return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do
+        Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do
           __run_perform(*args)
         end
-        job.pending?
       end
 
       def workers(num)
