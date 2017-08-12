@@ -14,8 +14,7 @@ crunching, or social platform manipulation. No reason to hold up a
 user when you can do these things in the background within the same
 process as your web application...
 
-Sucker Punch is built on top of [concurrent-ruby]
-(https://github.com/ruby-concurrency/concurrent-ruby). Each job is setup as
+Sucker Punch is built on top of [concurrent-ruby](https://github.com/ruby-concurrency/concurrent-ruby). Each job is setup as
 a pool, which equates to its own queue with individual workers working against
 the jobs. Unlike most other background processing libraries, Sucker
 Punch's jobs are stored in memory. The benefit to this is there is no
@@ -270,11 +269,11 @@ gem 'sucker_punch'
 And then configure the backend to use Sucker Punch:
 
 ```Ruby
-# config/initializers/sucker_punch.rb
-Rails.application.configure do
+# config/application.rb
+class Application < Rails::Application
+  # ...
   config.active_job.queue_adapter = :sucker_punch
 end
-
 ```
 
 If you want to use Sucker Punch version `2.0.0+` with Rails `< 5.0.0`, be sure
