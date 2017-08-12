@@ -82,33 +82,29 @@ module SuckerPunch
       assert_equal true, queue.running?
     end
 
+    def test_idle_considers_queue_workers_and_length
+      queue = SuckerPunch::Queue.find_or_create(FakeNilJob.to_s)
+      assert_equal true, queue.idle?
+    end
+
     def test_jobs_can_be_posted_to_pool
       arr = []
       fake_pool = FakePool.new
-      queue = SuckerPunch::Queue.new "fake", fake_pool
+      queue     = SuckerPunch::Queue.new "fake", fake_pool
       queue.post(1, 2) { |args| arr.push args }
       assert_equal [1, 2], arr.first
     end
 
-    def test_jobs_arent_posted_if_queue_isnt_running
-      arr = []
-      fake_pool = FakePool.new
-      queue = SuckerPunch::Queue.new "fake", fake_pool
-      queue.kill
-      queue.post(1, 2) { |args| arr.push args }
-      assert arr.empty?
-    end
-
     def test_kill_sends_kill_to_pool
       fake_pool = FakePool.new
-      queue = SuckerPunch::Queue.new "fake", fake_pool
+      queue     = SuckerPunch::Queue.new "fake", fake_pool
       queue.kill
       assert_equal :kill, fake_pool.signals.first
     end
 
     def test_shutdown_sends_shutdown_to_pool
       fake_pool = FakePool.new
-      queue = SuckerPunch::Queue.new "fake", fake_pool
+      queue     = SuckerPunch::Queue.new "fake", fake_pool
       queue.shutdown
       assert_equal :shutdown, fake_pool.signals.first
     end

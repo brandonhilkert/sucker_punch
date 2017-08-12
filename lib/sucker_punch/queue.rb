@@ -66,21 +66,43 @@ module SuckerPunch
       queues
     end
 
+    PAUSE_TIME = STDOUT.tty? ? 0.1 : 0.5
+
     def self.shutdown_all
+      deadline = Time.now + SuckerPunch.shutdown_timeout
+
       if SuckerPunch::RUNNING.make_false
+        # If a job is enqueued right before the script exits
+        # (command line, rake task, etc.), the system needs an
+        # interval to allow the enqueue jobs to make it in to the system
+        # otherwise the queue will look idle
+        sleep PAUSE_TIME
 
         queues = all
-        latch = Concurrent::CountDownLatch.new(queues.length)
 
-        queues.each do |queue|
-          queue.post(latch) { |l| l.count_down }
-          queue.shutdown
+        # Issue shutdown to each queue and let them wrap up their work. This
+        # prevents new jobs from being enqueued and lets the pool clean up
+        # after itself
+        queues.each { |queue| queue.shutdown }
+
+        # return if every queue is empty and workers in every queue are idle
+        return if queues.all? { |queue| queue.idle? }
+
+        SuckerPunch.logger.info("Pausing to allow workers to finish...")
+
+        remaining = deadline - Time.now
+
+        # Continue to loop through each queue and test if it's idle, while
+        # respecting the shutdown timeout
+        while remaining > PAUSE_TIME
+          return if queues.all? { |queue| queue.idle? }
+          sleep PAUSE_TIME
+          remaining = deadline - Time.now
         end
 
-        unless latch.wait(SuckerPunch.shutdown_timeout)
-          queues.each { |queue| queue.kill }
-          SuckerPunch.logger.info("Queued jobs didn't finish before shutdown_timeout...killing remaining jobs")
-        end
+        # Queues haven't finished work. Aggressively kill them.
+        SuckerPunch.logger.info("Queued jobs didn't finish before shutdown_timeout...killing remaining jobs")
+        queues.each { |queue| queue.kill }
       end
     end
 
@@ -115,6 +137,10 @@ module SuckerPunch
       synchronize { @running }
     end
 
+    def idle?
+      enqueued_jobs == 0 && busy_workers == 0
+    end
+
     def ==(other)
       pool == other.pool
     end
@@ -146,34 +172,18 @@ module SuckerPunch
     end
 
     def kill
-      if can_initiate_shutdown?
-        @pool.kill
-      end
+      @pool.kill
     end
 
     def shutdown
-      if can_initiate_shutdown?
-        @pool.shutdown
-      end
+      synchronize { @running = false }
+      @pool.shutdown
     end
 
     protected
 
     def pool
       @pool
-    end
-
-    private
-
-    def can_initiate_shutdown?
-      synchronize do
-        if @running
-          @running = false
-          true
-        else
-          false
-        end
-      end
     end
   end
 end
