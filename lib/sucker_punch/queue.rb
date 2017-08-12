@@ -52,13 +52,13 @@ module SuckerPunch
         queues[queue.name] = {
           "workers" => {
             "total" => queue.total_workers,
-            "busy" => queue.busy_workers,
-            "idle" => queue.idle_workers,
+            "busy"  => queue.busy_workers,
+            "idle"  => queue.idle_workers,
           },
           "jobs" => {
             "processed" => queue.processed_jobs,
-            "failed" => queue.failed_jobs,
-            "enqueued" => queue.enqueued_jobs,
+            "failed"    => queue.failed_jobs,
+            "enqueued"  => queue.enqueued_jobs,
           }
         }
       end
@@ -70,7 +70,7 @@ module SuckerPunch
       if SuckerPunch::RUNNING.make_false
 
         queues = all
-        latch = Concurrent::CountDownLatch.new(queues.length)
+        latch  = Concurrent::CountDownLatch.new(queues.length)
 
         queues.each do |queue|
           queue.post(latch) { |l| l.count_down }
@@ -146,9 +146,7 @@ module SuckerPunch
     end
 
     def kill
-      if can_initiate_shutdown?
-        @pool.kill
-      end
+      @pool.kill
     end
 
     def shutdown
