@@ -101,7 +101,7 @@ module SuckerPunch
         end
 
         # Queues haven't finished work. Aggressively kill them.
-        SuckerPunch.logger.info("Queued jobs didn't finish before shutdown_timeout...killing remaining jobs")
+        SuckerPunch.logger.warn("Queued jobs didn't finish before shutdown_timeout...killing remaining jobs")
         queues.each { |queue| queue.kill }
       end
     end
