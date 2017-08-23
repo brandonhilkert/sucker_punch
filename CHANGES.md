@@ -1,3 +1,8 @@
+2.0.3
+-------
+- Rewrite shutdown strategy to fix bug related to premature shutdown when only
+    1 job is in enqueued when a job has more than 1 worker
+
 2.0.2
 -------
 - Don't consider global shutdown bool when exhausting the queue during
