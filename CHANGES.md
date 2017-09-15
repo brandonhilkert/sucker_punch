@@ -1,3 +1,7 @@
+2.0.4
+-------
+- Better initialization of variables and names to remove warnings
+
 2.0.3
 -------
 - Rewrite shutdown strategy to fix bug related to premature shutdown when only
