@@ -39,9 +39,9 @@ module SuckerPunch
       l
     end
 
-    def shutdown_timeout
+    def shutdown_timeout  
       # 10 seconds on heroku, minus a grace period
-      @shutdown_timeout || 8
+      @shutdown_timeout ||= 8
     end
 
     def shutdown_timeout=(timeout)
