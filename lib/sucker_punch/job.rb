@@ -33,7 +33,7 @@ module SuckerPunch
       def perform_async(*args)
         return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
-        queue.post(args) { |args| __run_perform(*args) }
+        queue.post(args) { |job_args| __run_perform(*job_args) }
       end
 
       def perform_in(interval, *args)

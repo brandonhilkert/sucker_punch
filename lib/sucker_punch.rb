@@ -10,12 +10,12 @@ module SuckerPunch
   RUNNING = Concurrent::AtomicBoolean.new(true)
 
   class << self
-    def exception_handler=(handler)
-      @exception_handler = handler
+    def exception_handler
+      @exception_handler ||= method(:default_exception_handler)
     end
 
-    def exception_handler
-      @exception_handler || method(:default_exception_handler)
+    def exception_handler=(handler)
+      @exception_handler = handler
     end
 
     def default_exception_handler(ex, klass, args)
@@ -26,11 +26,7 @@ module SuckerPunch
     end
 
     def logger
-      @logger || default_logger
-    end
-
-    def logger=(log)
-      @logger = (log ? log : Logger.new('/dev/null'))
+      @logger ||= default_logger
     end
 
     def default_logger
@@ -39,9 +35,13 @@ module SuckerPunch
       l
     end
 
+    def logger=(log)
+      @logger = (log ? log : Logger.new('/dev/null'))
+    end
+
     def shutdown_timeout
       # 10 seconds on heroku, minus a grace period
-      @shutdown_timeout || 8
+      @shutdown_timeout ||= 8
     end
 
     def shutdown_timeout=(timeout)
