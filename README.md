@@ -254,6 +254,19 @@ $ rails g sucker_punch:job logger
 would create the file `app/jobs/logger_job.rb` with a unimplemented `#perform`
 method.
 
+## Sinatra
+
+If you're using Sucker Punch with Sinatra, you must require Sucker Punch before Sinatra:
+
+```ruby
+# app.rb
+
+require 'sucker_punch'
+require 'sinatra'
+```
+
+This will ensure Sucker Punch's `at_exit()` handler to clean up and shutdown queues does not happen **before** Sinatra *starts up* via its own `at_exit()` handler.
+
 ## Active Job
 
 Sucker Punch has been added as an Active Job adapter in Rails 4.2.
