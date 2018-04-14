@@ -1,7 +1,7 @@
 # Sucker Punch
 
-[![Build Status](https://travis-ci.org/brandonhilkert/sucker_punch.png?branch=master)](https://travis-ci.org/brandonhilkert/sucker_punch)
-[![Code Climate](https://codeclimate.com/github/brandonhilkert/sucker_punch.png)](https://codeclimate.com/github/brandonhilkert/sucker_punch)
+[![Build Status](https://travis-ci.org/brandonhilkert/sucker_punch.svg?branch=master)](https://travis-ci.org/brandonhilkert/sucker_punch)
+[![Code Climate](https://codeclimate.com/github/brandonhilkert/sucker_punch.svg)](https://codeclimate.com/github/brandonhilkert/sucker_punch)
 
 Sucker Punch is a single-process Ruby asynchronous processing library.
 This reduces costs
