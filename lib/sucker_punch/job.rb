@@ -21,8 +21,10 @@ module SuckerPunch
     def self.included(base)
       base.extend(ClassMethods)
       base.class_attribute :num_workers
+      base.class_attribute :queue_opts
 
       base.num_workers = 2
+      base.queue_opts = {}
     end
 
     def logger
@@ -32,13 +34,13 @@ module SuckerPunch
     module ClassMethods
       def perform_async(*args)
         return unless SuckerPunch::RUNNING.true?
-        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
+        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers, queue_opts)
         queue.post(args) { |job_args| __run_perform(*job_args) }
       end
 
       def perform_in(interval, *args)
         return unless SuckerPunch::RUNNING.true?
-        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers)
+        queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers, queue_opts)
         job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do
           __run_perform(*args)
         end
@@ -47,6 +49,10 @@ module SuckerPunch
 
       def workers(num)
         self.num_workers = num
+      end
+
+      def queue_options(opts)
+        self.queue_opts = opts
       end
 
       def __run_perform(*args)

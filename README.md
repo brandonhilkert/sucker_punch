@@ -114,6 +114,22 @@ class LogJob
 end
 ```
 
+#### Configure the Queue Size
+
+The default queue size is unlimited. If you wish to restrict this you can supply
+queue options as follows:
+
+```Ruby
+class LogJob
+  include SuckerPunch::Job
+  queue_options max_queue: 10
+
+  def perform(event)
+    Log.new(event).track
+  end
+end
+```
+
 #### Executing Jobs in the Future
 
 Many background processing libraries have methods to perform operations after a

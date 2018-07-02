@@ -55,6 +55,11 @@ module SuckerPunch
       FakeLogJob.workers(2)
     end
 
+    def test_can_set_queue_options
+      FakeLogJob.queue_options(max_queue: 10)
+      assert_equal({ max_queue: 10 }, FakeLogJob.queue_opts)
+    end
+
     def test_logger_is_accessible_from_instance
       SuckerPunch.logger = SuckerPunch.default_logger
       assert_equal SuckerPunch.logger, FakeLogJob.new.logger
