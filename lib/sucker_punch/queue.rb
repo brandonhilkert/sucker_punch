@@ -11,20 +11,19 @@ module SuckerPunch
       min_threads:     2,
       max_threads:     2,
       idletime:        60, # 1 minute
-      max_queue:       DEFAULT_MAX_QUEUE_SIZE,
       auto_terminate:  false # Let shutdown modes handle thread termination
     }.freeze
 
     QUEUES = Concurrent::Map.new
 
-    def self.find_or_create(name, num_workers = 2, opts = {})
+    def self.find_or_create(name, num_workers = 2, max_jobs = nil)
       pool = QUEUES.fetch_or_store(name) do
         options = DEFAULT_EXECUTOR_OPTIONS
           .merge(
             min_threads: num_workers,
-            max_threads: num_workers
+            max_threads: num_workers,
+            max_queue: max_jobs || DEFAULT_MAX_QUEUE_SIZE
           )
-          .merge(opts)
         Concurrent::ThreadPoolExecutor.new(options)
       end
 
