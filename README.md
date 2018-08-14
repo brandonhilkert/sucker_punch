@@ -117,12 +117,12 @@ end
 #### Configure the Queue Size
 
 The default number of jobs that can be queued is unlimited. If you wish to restrict this you can set
-maximum\_jobs as follows:
+max\_jobs as follows:
 
 ```Ruby
 class LogJob
   include SuckerPunch::Job
-  maximum_jobs 10
+  max_jobs 10
 
   def perform(event)
     Log.new(event).track

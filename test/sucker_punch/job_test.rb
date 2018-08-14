@@ -56,8 +56,8 @@ module SuckerPunch
     end
 
     def test_can_set_max_jobs
-      FakeLogJob.maximum_jobs(10)
-      assert_equal 10, FakeLogJob.max_jobs
+      FakeLogJob.max_jobs(10)
+      assert_equal 10, FakeLogJob.num_jobs_max
     end
 
     def test_logger_is_accessible_from_instance
