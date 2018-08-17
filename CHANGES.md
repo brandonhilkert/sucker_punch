@@ -1,6 +1,6 @@
 2.1.0
 -------
-- Add max\_jobs configuration option to set the maximum number of tasks that 
+- Add `max_jobs` configuration option to set the maximum number of tasks that
   may be waiting in the work queue
 
     ```ruby
