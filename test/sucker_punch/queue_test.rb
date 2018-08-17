@@ -29,6 +29,11 @@ module SuckerPunch
       assert_equal 4, queue.min_length
     end
 
+    def test_queue_max_queue_can_be_set
+      queue = SuckerPunch::Queue.find_or_create(@queue, 4, 10)
+      assert_equal(10, queue.max_queue)
+    end
+
     def test_same_queue_is_returned_on_subsequent_queries
       queue = SuckerPunch::Queue.find_or_create(@queue)
       assert_equal queue, SuckerPunch::Queue.find_or_create(@queue)

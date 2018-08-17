@@ -5,22 +5,25 @@ module SuckerPunch
     extend Forwardable
     include Concurrent::ExecutorService
 
+    DEFAULT_MAX_QUEUE_SIZE = 0 # Unlimited
+
     DEFAULT_EXECUTOR_OPTIONS = {
       min_threads:     2,
       max_threads:     2,
       idletime:        60, # 1 minute
-      max_queue:       0, # unlimited
       auto_terminate:  false # Let shutdown modes handle thread termination
     }.freeze
 
     QUEUES = Concurrent::Map.new
 
-    def self.find_or_create(name, num_workers = 2)
+    def self.find_or_create(name, num_workers = 2, num_jobs_max = nil)
       pool = QUEUES.fetch_or_store(name) do
-        options = DEFAULT_EXECUTOR_OPTIONS.merge({
-          min_threads: num_workers,
-          max_threads: num_workers
-        })
+        options = DEFAULT_EXECUTOR_OPTIONS
+          .merge(
+            min_threads: num_workers,
+            max_threads: num_workers,
+            max_queue: num_jobs_max || DEFAULT_MAX_QUEUE_SIZE
+          )
         Concurrent::ThreadPoolExecutor.new(options)
       end
 
@@ -111,6 +114,7 @@ module SuckerPunch
     def_delegators :@pool,
       :max_length,
       :min_length,
+      :max_queue,
       :length,
       :queue_length,
       :wait_for_termination#,

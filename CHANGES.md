@@ -1,3 +1,26 @@
+2.1.0
+-------
+- Add max\_jobs configuration option to set the maximum number of tasks that 
+  may be waiting in the work queue
+
+    ```ruby
+    class JobWithLimit
+      include SuckerPunch::Job
+      max_jobs 2
+
+      def perform(data)
+        # work...
+      end
+    end
+
+    10.times do
+      begin
+        JobWithLimit.perform_async('work') }
+      rescue Concurrent::RejectedExecutionError => e
+        # Queue maxed out, this job didn't get queued
+      end
+    end
+
 2.0.4
 -------
 - Better initialization of variables and names to remove warnings

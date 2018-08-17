@@ -55,6 +55,11 @@ module SuckerPunch
       FakeLogJob.workers(2)
     end
 
+    def test_can_set_max_jobs
+      FakeLogJob.max_jobs(10)
+      assert_equal 10, FakeLogJob.num_jobs_max
+    end
+
     def test_logger_is_accessible_from_instance
       SuckerPunch.logger = SuckerPunch.default_logger
       assert_equal SuckerPunch.logger, FakeLogJob.new.logger
