@@ -1,3 +1,7 @@
+2.1.1
+-------
+- Relax versioning constraint of `concurrent-ruby` to make way for 1.1 release
+
 2.1.0
 -------
 - Add `max_jobs` configuration option to set the maximum number of tasks that
