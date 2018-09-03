@@ -25,4 +25,10 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "pry"
 
   gem.add_dependency "concurrent-ruby", "~> 1.0"
+  
+  if gem.respond_to?(:metadata)
+    gem.metadata['changelog_uri'] = 'https://github.com/brandonhilkert/sucker_punch/blob/master/CHANGES.md'
+    gem.metadata['source_code_uri'] = 'https://github.com/brandonhilkert/sucker_punch'
+    gem.metadata['bug_tracker_uri'] = 'https://github.com/brandonhilkert/sucker_punch/issues'
+  end
 end
