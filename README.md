@@ -147,7 +147,7 @@ class DataJob
 end
 
 DataJob.perform_async("asdf") # immediately perform asynchronously
-DataJob.perform_in(60, "asdf") # `perform` will be excuted 60 sec. later
+DataJob.perform_in(60, "asdf") # `perform` will be executed 60 sec. later
 ```
 
 #### `ActiveRecord` Connection Pool Connections

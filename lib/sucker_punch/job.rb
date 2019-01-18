@@ -14,7 +14,7 @@ module SuckerPunch
   # To trigger asynchronous job:
   #
   #   LogJob.perform_async(1, 2, 3)
-  #   LogJob.perform_in(60, 1, 2, 3) # `perform` will be excuted 60 sec. later
+  #   LogJob.perform_in(60, 1, 2, 3) # `perform` will be executed 60 sec. later
   #
   # Note that perform_async is a class method, perform is an instance method.
   module Job
