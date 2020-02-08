@@ -17,7 +17,7 @@ require 'sucker_punch'
 #
 # Include inline testing lib:
 #
-# require 'sucker_punch/testing/inline"
+# require 'sucker_punch/testing/inline'
 #
 # LogJob.perform_async(1, 2, 3) is now synchronous
 # LogJob.perform_in(1, 2, 3) is now synchronous
