@@ -20,9 +20,6 @@ module SuckerPunch
   module Job
     def self.included(base)
       base.extend(ClassMethods)
-      base.class_attribute :num_workers
-      base.class_attribute :num_jobs_max
-
       base.num_workers = 2
       base.num_jobs_max = nil
     end
@@ -32,6 +29,14 @@ module SuckerPunch
     end
 
     module ClassMethods
+      def num_workers=(num)
+        define_singleton_method(:num_workers) { num }
+      end
+
+      def num_jobs_max=(num)
+        define_singleton_method(:num_jobs_max) { num }
+      end
+
       def perform_async(*args)
         return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers, num_jobs_max)
