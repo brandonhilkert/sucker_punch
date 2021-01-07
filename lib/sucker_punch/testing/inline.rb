@@ -25,8 +25,8 @@ require 'sucker_punch'
 module SuckerPunch
   module Job
     module ClassMethods
-      def perform_async(...)
-        self.new.perform(...)
+      def perform_async(*args, **kwargs)
+        self.new.perform(*args, **kwargs)
       end
 
       def perform_in(_, *args, **kwargs)

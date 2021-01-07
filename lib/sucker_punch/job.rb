@@ -35,7 +35,7 @@ module SuckerPunch
       def perform_async(*args, **kwargs)
         return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers, num_jobs_max)
-        queue.post([args, kwargs]) { |job_args, job_kwargs| __run_perform(*job_args, **job_kwargs) }
+        queue.post { __run_perform(*args, **kwargs) }
       end
 
       def perform_in(interval, *args, **kwargs)
@@ -57,7 +57,13 @@ module SuckerPunch
 
       def __run_perform(*args, **kwargs)
         SuckerPunch::Counter::Busy.new(self.to_s).increment
-        result = self.new.perform(*args, **kwargs)
+
+        result = if RUBY_VERSION >= '2.5'
+                   self.new.perform(*args, **kwargs)
+                 else
+                   self.new.perform(*args)
+                 end
+
         SuckerPunch::Counter::Processed.new(self.to_s).increment
         result
       rescue => ex
