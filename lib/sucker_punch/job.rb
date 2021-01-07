@@ -32,17 +32,17 @@ module SuckerPunch
     end
 
     module ClassMethods
-      def perform_async(*args)
+      def perform_async(*args, **kwargs)
         return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers, num_jobs_max)
-        queue.post(args) { |job_args| __run_perform(*job_args) }
+        queue.post([args, kwargs]) { |job_args, job_kwargs| __run_perform(*job_args, **job_kwargs) }
       end
 
-      def perform_in(interval, *args)
+      def perform_in(interval, *args, **kwargs)
         return unless SuckerPunch::RUNNING.true?
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers, num_jobs_max)
         job = Concurrent::ScheduledTask.execute(interval.to_f, args: args, executor: queue) do
-          __run_perform(*args)
+          __run_perform(*args, **kwargs)
         end
         job.pending?
       end
@@ -55,14 +55,14 @@ module SuckerPunch
         self.num_jobs_max = num
       end
 
-      def __run_perform(*args)
+      def __run_perform(*args, **kwargs)
         SuckerPunch::Counter::Busy.new(self.to_s).increment
-        result = self.new.perform(*args)
+        result = self.new.perform(*args, **kwargs)
         SuckerPunch::Counter::Processed.new(self.to_s).increment
         result
       rescue => ex
         SuckerPunch::Counter::Failed.new(self.to_s).increment
-        SuckerPunch.exception_handler.call(ex, self, args)
+        SuckerPunch.exception_handler.call(ex, self, [*args, **kwargs])
       ensure
         SuckerPunch::Counter::Busy.new(self.to_s).decrement
       end

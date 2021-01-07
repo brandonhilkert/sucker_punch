@@ -24,7 +24,7 @@ module SuckerPunch
             max_threads: num_workers,
             max_queue: num_jobs_max || DEFAULT_MAX_QUEUE_SIZE
           )
-        Concurrent::ThreadPoolExecutor.new(options)
+        Concurrent::ThreadPoolExecutor.new(**options)
       end
 
       new(name, pool)
@@ -165,10 +165,10 @@ module SuckerPunch
       SuckerPunch::Counter::Failed.new(name).value
     end
 
-    def post(*args, &block)
+    def post(...)
       synchronize do
         if @running
-          @pool.post(*args, &block)
+          @pool.post(...)
         else
           false
         end
@@ -191,4 +191,3 @@ module SuckerPunch
     end
   end
 end
-

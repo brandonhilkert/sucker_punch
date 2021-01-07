@@ -41,7 +41,7 @@ class SuckerPunchTest < Minitest::Test
   end
 
   def test_exception_handler_can_be_set
-    SuckerPunch.exception_handler = -> (ex, _, _) { raise "bad stuff" }
+    SuckerPunch.exception_handler = -> (_ex, _, _) { raise "bad stuff" }
     assert_raises(::RuntimeError) { SuckerPunch.exception_handler.call(StandardError.new("bad"), nil, nil) }
   end
 
