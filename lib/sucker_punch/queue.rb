@@ -24,7 +24,7 @@ module SuckerPunch
             max_threads: num_workers,
             max_queue: num_jobs_max || DEFAULT_MAX_QUEUE_SIZE
           )
-        Concurrent::ThreadPoolExecutor.new(**options)
+        Concurrent::ThreadPoolExecutor.new(options)
       end
 
       new(name, pool)
