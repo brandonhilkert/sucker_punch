@@ -61,7 +61,7 @@ module SuckerPunch
         result = if RUBY_VERSION >= '2.5'
                    self.new.perform(*args, **kwargs)
                  else
-                   self.new.perform(*args)
+                   self.new.perform(*args, *(kwargs.any? ? [kwargs] : nil))
                  end
 
         SuckerPunch::Counter::Processed.new(self.to_s).increment
