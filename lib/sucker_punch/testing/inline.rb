@@ -28,10 +28,12 @@ module SuckerPunch
       def perform_async(*args)
         self.new.perform(*args)
       end
+      ruby2_keywords(:perform_async) if respond_to?(:ruby2_keywords, true)
 
       def perform_in(_, *args)
         self.new.perform(*args)
       end
+      ruby2_keywords(:perform_in) if respond_to?(:ruby2_keywords, true)
     end
   end
 end

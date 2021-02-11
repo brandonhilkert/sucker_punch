@@ -122,6 +122,22 @@ module SuckerPunch
       assert SuckerPunch::Counter::Processed.new(job_class.to_s).value == 1
     end
 
+    def test_perform_async_handles_keyword_arguments
+      arr = Concurrent::Array.new
+      latch = Concurrent::CountDownLatch.new
+      FakeKeywordLatchJob.perform_async(arr: arr, latch: latch)
+      latch.wait(1)
+      assert_equal 1, arr.size
+    end
+
+    def test_perform_in_handles_keyword_arguments
+      arr = Concurrent::Array.new
+      latch = Concurrent::CountDownLatch.new
+      FakeKeywordLatchJob.perform_in(0.1, arr: arr, latch: latch)
+      latch.wait(1)
+      assert_equal 1, arr.size
+    end
+
     def test_failed_jobs_is_incremented_when_job_raises
       job_class = Class.new(FakeErrorJob)
       jobs = 3
@@ -137,6 +153,14 @@ module SuckerPunch
     class FakeLatchJob
       include SuckerPunch::Job
       def perform(arr, latch)
+        arr.push true
+        latch.count_down
+      end
+    end
+
+    class FakeKeywordLatchJob
+      include SuckerPunch::Job
+      def perform(arr: Concurrent::Array.new, latch: Concurrent::CountDownLatch.new)
         arr.push true
         latch.count_down
       end

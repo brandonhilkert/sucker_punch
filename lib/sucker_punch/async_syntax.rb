@@ -13,6 +13,7 @@ module SuckerPunch
     def perform(*args)
       @job.class.perform_async(*args)
     end
+    ruby2_keywords(:perform) if respond_to?(:ruby2_keywords, true)
   end
 end
 

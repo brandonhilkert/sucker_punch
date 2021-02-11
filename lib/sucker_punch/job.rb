@@ -37,6 +37,7 @@ module SuckerPunch
         queue = SuckerPunch::Queue.find_or_create(self.to_s, num_workers, num_jobs_max)
         queue.post(args) { |job_args| __run_perform(*job_args) }
       end
+      ruby2_keywords(:perform_async) if respond_to?(:ruby2_keywords, true)
 
       def perform_in(interval, *args)
         return unless SuckerPunch::RUNNING.true?
@@ -46,6 +47,7 @@ module SuckerPunch
         end
         job.pending?
       end
+      ruby2_keywords(:perform_in) if respond_to?(:ruby2_keywords, true)
 
       def workers(num)
         self.num_workers = num
@@ -66,6 +68,7 @@ module SuckerPunch
       ensure
         SuckerPunch::Counter::Busy.new(self.to_s).decrement
       end
+      ruby2_keywords(:__run_perform) if respond_to?(:ruby2_keywords)
     end
   end
 end

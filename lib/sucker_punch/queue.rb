@@ -174,6 +174,7 @@ module SuckerPunch
         end
       end
     end
+    ruby2_keywords(:post) if respond_to?(:ruby2_keywords, true)
 
     def kill
       @pool.kill
