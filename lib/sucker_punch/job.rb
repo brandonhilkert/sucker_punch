@@ -68,7 +68,7 @@ module SuckerPunch
       ensure
         SuckerPunch::Counter::Busy.new(self.to_s).decrement
       end
-      ruby2_keywords(:__run_perform) if respond_to?(:ruby2_keywords)
+      ruby2_keywords(:__run_perform) if respond_to?(:ruby2_keywords, true)
     end
   end
 end
