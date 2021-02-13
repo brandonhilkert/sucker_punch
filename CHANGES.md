@@ -1,3 +1,7 @@
+3.0.0
+-------
+- Add support for keyword arguments in ruby `>= 3.0`. More details in [release notes](https://www.ruby-lang.org/en/news/2020/12/25/ruby-3-0-0-released/).
+
 2.1.1
 -------
 - Relax versioning constraint of `concurrent-ruby` to make way for 1.1 release
