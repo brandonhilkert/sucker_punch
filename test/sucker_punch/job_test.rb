@@ -182,4 +182,3 @@ module SuckerPunch
     end
   end
 end
-

@@ -10,9 +10,8 @@ module SuckerPunch
       @job = job
     end
 
-    def perform(*args)
-      @job.class.perform_async(*args)
+    def perform(*args, **kwargs)
+      @job.class.perform_async(*args, **kwargs)
     end
   end
 end
-

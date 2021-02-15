@@ -30,7 +30,7 @@ module SuckerPunch
   end
 
   class Queue
-    def self.find_or_create(name, number_workers = 2, num_jobs_max = nil)
+    def self.find_or_create(name, _number_workers = 2, _num_jobs_max = nil)
       QUEUES.fetch_or_store(name) do
         []
       end
