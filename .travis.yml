@@ -1,13 +1,21 @@
 language: ruby
+
+cache: bundler
+
 rvm:
-  - rbx-2
-  - 2.0.0
-  - 2.1.8
-  - 2.2.4
-  - 2.3.4
-  - 2.4.1
+  - truffleruby
+  - 2.0
+  - 2.1
+  - 2.2
+  - 2.3
+  - 2.4
+  - 2.5
+  - 2.6
+  - 2.7
+  - 3.0
   - ruby-head
 
 matrix:
   allow_failures:
-    - rvm: rbx-2
+    - rvm: truffleruby
+    - rvm: ruby-head
