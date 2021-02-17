@@ -70,7 +70,6 @@ module SuckerPunch
       all_stats = SuckerPunch::Queue.stats
       stats = all_stats[FakeLatchJob.to_s]
       assert stats["workers"]["total"] > 0
-      assert stats["workers"]["busy"] == 0
       assert stats["workers"]["idle"] > 0
       assert stats["jobs"]["processed"] > 0
       assert stats["jobs"]["failed"] == 0
