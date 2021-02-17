@@ -165,10 +165,10 @@ module SuckerPunch
       SuckerPunch::Counter::Failed.new(name).value
     end
 
-    def post(*args, **kwargs, &block)
+    def post(*args, &block)
       synchronize do
         if @running
-          @pool.post(*args, **kwargs, &block)
+          @pool.post(*args, &block)
         else
           false
         end

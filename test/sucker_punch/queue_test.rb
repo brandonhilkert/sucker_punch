@@ -144,9 +144,9 @@ module SuckerPunch
         @signals = []
       end
 
-      def post(*args, **kwargs, &block)
+      def post(*args, &block)
         if block_given?
-          block.call(args, **kwargs)
+          block.call(args)
         end
       end
 
