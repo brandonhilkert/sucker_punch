@@ -100,6 +100,14 @@ module SuckerPunch
       assert_equal [1, 2], arr.first
     end
 
+    def test_jobs_can_be_posted_to_pool_with_keyword_args
+      arr = []
+      fake_pool = FakePool.new
+      queue     = SuckerPunch::Queue.new "fake", fake_pool
+      queue.post(a: 1, b: 2) { |args| arr.push args }
+      assert_equal [{a: 1, b: 2}], arr.first
+    end
+
     def test_kill_sends_kill_to_pool
       fake_pool = FakePool.new
       queue     = SuckerPunch::Queue.new "fake", fake_pool
