@@ -28,7 +28,7 @@ etc.).
 
 Add this line to your application's Gemfile:
 
-    gem 'sucker_punch', '~> 2.0'
+    gem 'sucker_punch', '~> 3.0'
 
 And then execute:
 
@@ -40,7 +40,9 @@ Or install it yourself as:
 
 ## Backwards Compatibility
 
-In version `~> 2.0.0`, the syntax to enqueue an asynchronous background job has changed from:
+No breaking changes were introduced in version 3.x.
+
+In version `~> 2.0.0`, the syntax to enqueue an asynchronous background job was changed from:
 
 ```ruby
 LogJob.new.async.perform(...)
