@@ -19,6 +19,14 @@ module SuckerPunch
       assert_equal 1, arr.size
     end
 
+    def test_perform_through_runs_in_named_queue_asynchronously
+      arr = Concurrent::Array.new
+      latch = Concurrent::CountDownLatch.new
+      FakeLatchJob.perform_through('latchqueue', arr, latch)
+      latch.wait(1)
+      assert_equal 1, arr.size
+    end
+
     def test_job_isnt_run_with_perform_async_if_sucker_punch_is_shutdown
       SuckerPunch::RUNNING.make_false
       arr = Concurrent::Array.new
@@ -85,7 +93,7 @@ module SuckerPunch
     end
 
     def test_run_perform_delegates_to_instance_perform
-      assert_equal "fake", FakeLogJob.__run_perform
+      assert_equal "fake", FakeLogJob.__run_perform(self.to_s)
     end
 
     def test_busy_workers_is_incremented_during_job_execution
