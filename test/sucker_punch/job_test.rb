@@ -22,7 +22,12 @@ module SuckerPunch
     def test_perform_through_runs_in_named_queue_asynchronously
       arr = Concurrent::Array.new
       latch = Concurrent::CountDownLatch.new
-      FakeLatchJob.perform_through('latchqueue', arr, latch)
+      options = {
+        queue: 'latchqueue',
+        workers: 3
+      }
+      FakeLatchJob.perform_through(options, arr, latch)
+      binding.pry
       latch.wait(1)
       assert_equal 1, arr.size
     end

@@ -49,10 +49,13 @@ module SuckerPunch
       end
       ruby2_keywords(:perform_in) if respond_to?(:ruby2_keywords, true)
 
-      def perform_through(queue, *args)
+      def perform_through(options, *args)
         return unless SuckerPunch::RUNNING.true?
-        job_queue = SuckerPunch::Queue.find_or_create(queue, 1, nil)
-        job_queue.post { __run_perform(queue, *args) }
+        queue_name = options[:queue] || self.to_s
+        workers_count = options[:workers] || 1
+        max_jobs = options[:max_jobs]
+        queue = SuckerPunch::Queue.find_or_create(queue_name, workers_count, max_jobs)
+        queue.post { __run_perform(queue_name, *args) }
       end
       ruby2_keywords(:perform_through) if respond_to?(:ruby2_keywords, true)
 
