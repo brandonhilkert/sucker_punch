@@ -152,6 +152,37 @@ DataJob.perform_async("asdf") # immediately perform asynchronously
 DataJob.perform_in(60, "asdf") # `perform` will be executed 60 sec. later
 ```
 
+#### Queue up Jobs in a named queue
+
+In some cases you want to schedule different jobs in a specific queue and sometimes with specific order. Use the `perform_through`
+with a hash that defines the options for the queue.
+
+The options could contain the following keys
+
+* queue (queue name)
+* workers (number of workers)
+* max jobs (number of max jobs)
+
+Note: if the queue name is already defined workers and max_jobs will not be overwritten, Otherwise A new queue will be created
+
+``` ruby
+class DataJob
+  include SuckerPunch::Job
+
+  def perform(data)
+    puts data
+  end
+end
+
+options = {
+  queue: 'data_queue',
+  workers: 2, # default is 1
+  max_jobs: 10 # default is Unlimited
+}
+DataJob.perform_through(options, "asdf") # Job will be queued and `perform` will be executed when worker picks it up.
+```
+
+
 #### `ActiveRecord` Connection Pool Connections
 
 Jobs interacting with `ActiveRecord` should take special precaution not to
