@@ -159,11 +159,11 @@ with a hash that defines the options for the queue.
 
 The options could contain the following keys
 
-* queue (queue name)
-* workers (number of workers)
-* max jobs (number of max jobs)
+* `queue` (queue name)
+* `workers` (number of workers)
+* `max jobs` (number of max jobs)
 
-Note: if the queue name is already defined workers and max_jobs will not be overwritten, Otherwise A new queue will be created
+Note: if the queue name is already defined `workers` and `max_jobs` will not be overwritten, Otherwise A new queue with these options will be created
 
 ``` ruby
 class DataJob
@@ -175,7 +175,7 @@ class DataJob
 end
 
 options = {
-  queue: 'data_queue',
+  queue: 'data_queue', # default is class name,
   workers: 2, # default is 1
   max_jobs: 10 # default is Unlimited
 }
