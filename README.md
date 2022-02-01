@@ -319,8 +319,10 @@ require 'sucker_punch/async_syntax'
 
 ## FAQ
 
-Q: What is the difference between `sucker_punch` and `ActiveJob::QueueAdapters::AsyncAdapter`?<br />
-A: Not much at this point. SuckerPunch existed before ActiveJob, but ultimately uses similar code under the covers. I'd recommend using `AsyncAdapter` if you're using Rails.
+**What is the difference between `sucker_punch` and `ActiveJob::QueueAdapters::AsyncAdapter`?**
+
+Not much at this point. SuckerPunch existed before ActiveJob, but ultimately uses similar code under the covers. I'd recommend using `AsyncAdapter` if you're using Rails.
+
 
 ## Troubleshooting
 
