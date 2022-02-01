@@ -24,11 +24,6 @@ they will be lost. For this reason, Sucker Punch is generally
 recommended for jobs that are fast and non-mission critical (ie. logs, emails,
 etc.).
 
-## FAQ
-
-Q: What is the difference between `sucker_punch` and `ActiveJob::QueueAdapters::AsyncAdapter`?<br />
-A: Not much at this point. SuckerPunch existed before ActiveJob, but ultimately uses similar code under the covers. I'd recommend using `AsyncAdapter` if you're using Rails.
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -321,6 +316,11 @@ to include the backwards compatibility module in an initializer:
 
 require 'sucker_punch/async_syntax'
 ```
+
+## FAQ
+
+Q: What is the difference between `sucker_punch` and `ActiveJob::QueueAdapters::AsyncAdapter`?<br />
+A: Not much at this point. SuckerPunch existed before ActiveJob, but ultimately uses similar code under the covers. I'd recommend using `AsyncAdapter` if you're using Rails.
 
 ## Troubleshooting
 
