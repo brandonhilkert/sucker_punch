@@ -317,6 +317,11 @@ to include the backwards compatibility module in an initializer:
 require 'sucker_punch/async_syntax'
 ```
 
+## FAQ
+
+Q: What is the difference between `sucker_punch` and `ActiveJob::QueueAdapters::AsyncAdapter`?<br />
+A: Not much at this point. SuckerPunch existed before ActiveJob, but ultimately uses similar code under the covers. I'd recommend using `AsyncAdapter` if you're using Rails.
+
 ## Troubleshooting
 
 ### Initializers for forking servers (Unicorn, Passenger, etc.)
