@@ -26,13 +26,9 @@ etc.).
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Run:
 
-    gem 'sucker_punch', '~> 3.0'
-
-And then execute:
-
-    $ bundle
+    bundle add sucker_punch
 
 Or install it yourself as:
 
