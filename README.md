@@ -34,6 +34,10 @@ And then execute:
 
     $ bundle
 
+You can also run (same as two steps above):
+
+    bundle add sucker_punch
+
 Or install it yourself as:
 
     $ gem install sucker_punch
