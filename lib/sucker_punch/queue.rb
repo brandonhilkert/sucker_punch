@@ -108,6 +108,19 @@ module SuckerPunch
         queues.each { |queue| queue.kill }
       end
     end
+    
+    def self.wait
+      queues = all
+      
+      # return if every queue is empty and workers in every queue are idle
+      return if queues.all? { |queue| queue.idle? }
+
+      SuckerPunch.logger.info("Pausing to allow workers to finish...")
+
+      while queues.any? { |queue| !queue.idle? }
+        sleep PAUSE_TIME
+      end
+    end
 
     attr_reader :name
 
