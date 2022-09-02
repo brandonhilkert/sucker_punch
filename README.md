@@ -243,6 +243,15 @@ To configure something other than the default 8 sec.:
   SuckerPunch.shutdown_timeout = 15 # # of sec. to wait before killing threads
 ```
 
+#### Queue Class Methods
+
+Sucker Punch leverages concurrent-friendly queues per-process. These class methods operating on all queues might be helpful in some edge cases.
+
+- `SuckerPunch::Queue.stats` - Returns a hash keyed by each queue's name with total, busy, and timeout statistics for each queue's `workers` and `jobs`.
+- `SuckerPunch::Queue.clear` - Calls `clear` for each queue. Susceptible to race conditions. Only use in testing.
+- `SuckerPunch::Queue.shutdown_all` - Used with SuckerPunch's `at_exit` hook. Waits for all queues to be idle using the [shutdown timeout](#shutdown-timeout) configuration above.
+- `SuckerPunch::Queue.wait` - Waits for all queues to become idle with no timeout. 
+
 #### Timeouts
 
 Using `Timeout` causes persistent connections to
