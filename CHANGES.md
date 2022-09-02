@@ -1,3 +1,7 @@
+3.1.0
+-------
+- Add a blocking `SuckerPunch::Queue.wait` which waits for all queues to become idle.
+
 3.0.1
 -------
 - Opt for keyword parsing using `ruby2_keywords` for compatibility.
