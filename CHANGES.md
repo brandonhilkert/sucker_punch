@@ -1,3 +1,7 @@
+3.2.0
+-------
+- Rename `singleton_class?` method to allow for usage with Ruby 3
+
 3.1.0
 -------
 - Add a blocking `SuckerPunch::Queue.wait` which waits for all queues to become idle.
