@@ -18,7 +18,7 @@ rescue LoadError
               define_method(:#{name}) { val }
             end
 
-            if singleton_class?
+            if sucker_punch_is_singleton_class?
               class_eval do
                 def #{name}
                   defined?(@#{name}) ? @#{name} : singleton_class.#{name}
@@ -42,7 +42,8 @@ rescue LoadError
     end
 
     private
-    def singleton_class?
+
+    def sucker_punch_is_singleton_class?
       ancestors.first != self
     end
   end
