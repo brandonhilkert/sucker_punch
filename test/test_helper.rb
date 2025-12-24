@@ -4,5 +4,6 @@ require 'sucker_punch'
 require 'pry'
 require 'minitest/autorun'
 require 'minitest/pride'
+require 'minitest/mock'
 
 SuckerPunch.logger = nil
